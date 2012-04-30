@@ -38,26 +38,26 @@ Default config:
 
 ; Default config
 [output]
-dir = "/output" 	; relative to current dir (getcwd())
-ext = ".php"		; output files extension
-dirNameFormat = 'Y-m-d_H-i-s'	; name of directory for generated files in output directory
-								; <Year>-<Month>-<Day>_<Hour>-<Min>-<Sec>
+dir = "/output"     ; relative to current dir (getcwd())
+ext = ".php"        ; output files extension
+dirNameFormat = 'Y-m-d_H-i-s'   ; name of directory for generated files in output directory
+                                ; <Year>-<Month>-<Day>_<Hour>-<Min>-<Sec>
 
 [input]
-mask = "*.texy"	; mask for searching input files
-ext = ".texy"	; input file extension
-layout = "@layout.html"	; name of layout file
-baseDir = ""	; value of variable {%baseDir}
+mask = "*.texy" ; mask for searching input files
+ext = ".texy"   ; input file extension
+layout = "@layout.html" ; name of layout file
+baseDir = ""    ; value of variable {%baseDir}
 
 
 
 Config - texyConfig.php
 -----------------------
 <?php
-		function texyConfig(&$texy)
-		{
-			$texy->headingModule->generateID = false;
-		}
+	function texyConfig(&$texy)
+	{
+		$texy->headingModule->generateID = false;
+	}
 ?>
 
 
@@ -65,8 +65,8 @@ Config - texyConfig.php
 Variables
 ---------
 
-{%title} 	- page title (H1)
-{%content}	- escaped HTML content
+{%title}    - page title (H1)
+{%content}  - escaped HTML content
 
 {%updateDay}
 {%updateMon}
@@ -75,10 +75,15 @@ Variables
 {%updateMin}
 {%updateSec}
 
-{%tocUl}	- TOC in HTML <ul><li><a href="#toc">heading</a></li> - NOT IMPLEMENTED
-{%tocOl}	- TOC in HTML <ul><li><a href="#toc">heading</a></li> - NOT IMPLEMENTED
-{%tocA}		- TOC in HTML <a href="#toc">heading</a>
+{%tocUl}    - TOC in HTML <ul><li><a href="#toc">heading</a></li> - NOT IMPLEMENTED
+{%tocOl}    - TOC in HTML <ul><li><a href="#toc">heading</a></li> - NOT IMPLEMENTED
+{%tocA}     - TOC in HTML <a href="#toc">heading</a>
 
-{%baseDir}	- Document Root
+{%baseDir}  - Document Root
+
+
+----------------------------------
+Homepage: http://janpecha.iunas.cz/webgen/
+Author: http://janpecha.iunas.cz/
 
 
