@@ -152,15 +152,14 @@
 					);
 					
 					$variables = array();
-					$values = array();
 					
 					foreach($vars as $var => $val)
 					{
-						$variables[] = "{%$var}";
-						$values[] = $val;
+						$key = "{%$var}";
+						$variables[$key] = $val;
 					}
 					
-					$page = str_replace($variables, $values, $layout);
+					$page = strtr($layout, $variables);
 					
 					if($page !== false)
 					{
