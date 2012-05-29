@@ -1,0 +1,132 @@
+<?php
+	/**
+	 * @author		Jan Pecha, <janpecha@email.cz>
+	 * @license		http://janpecha.iunas.cz/webgen/#license
+	 * @link		http://janpecha.iunas.cz/
+	 * @version		2012-05-29-1
+	 */
+
+	require __DIR__ . '/libs/Nette/nette.min.php';
+	require __DIR__ . '/libs/Texy/texy.min.php';
+	require __DIR__ . '/libs/Webgen/Generator.php';
+	require __DIR__ . '/libs/Webgen/Texy.php';
+	require __DIR__ . '/libs/Webgen/TexyFilter.php';
+	require __DIR__ . '/libs/Webgen/FileTemplate.php';
+	require __DIR__ . '/libs/Cli/Cli.php';
+	
+	
+	use Nette\Utils\Finder;
+	
+	date_default_timezone_set('Europe/Prague');
+	
+	\Nette\Diagnostics\Debugger::enable();
+	
+	try
+	{
+		$params = \Cli\Cli::parseParams($_SERVER['argv']);
+	
+		if($params === FALSE || !isset($params['run']))
+		{
+?>
+Webgen 2.0
+----------
+Usage:
+	php -f webgen.phpc -- --run
+
+<?php
+			exit;
+		}
+		
+		
+		$dir = getcwd();
+		$configPath = $dir . '/config.neon';
+		
+		$defaultConfig = array(
+			'input' => array(
+				'layout' => '@layout.latte',	// name of layout file
+				'dir' => 'input', // name of input directory
+			),
+			
+			'output' => array(
+				'dir' => 'output',	// name of output directory
+				'ext' => 'html',	// output file extension
+			),
+			
+			'variables' => array(
+				'baseDir' => '',	// baseDir variable, etc. '/my_web_subdir'
+			),
+		);
+		
+		
+		// Load NEON
+		\Cli\Cli::log('Load config...');
+		$config = file_get_contents($configPath);
+		$config = \Nette\Utils\Neon::decode($config);
+		
+		if(is_array($config))
+		{
+			$config = $config + $defaultConfig;
+		}
+		else
+		{
+			$config = $defaultConfig;	
+		}
+		
+		
+		// Settings
+		$inputDirectory = \Cli\Cli::formatPath($config['input']['dir'], $dir);
+		$outputDirectory = \Cli\Cli::formatPath($config['output']['dir'], $dir);
+		$layoutPath = \Cli\Cli::formatPath($config['input']['layout'], $dir);
+		
+		
+		// Generating
+		\Cli\Cli::log('Generating...');
+		
+		$generator = new \Webgen\Generator;
+		$generator->config = $config;
+		$generator->inputDirectory = $inputDirectory;
+		$generator->outputDirectory = $outputDirectory;
+		$generator->layoutPath = $layoutPath;
+		
+		$finder = Finder::findFiles('*.texy', '*.latte');
+		
+		$lastBuildDate = \Webgen\Generator::getLastBuildDate($dir . '/lastBuild.dat');
+		
+		if($lastBuildDate !== FALSE)
+		{
+			// kdyz nebyl od posledne zmenen layout => muzeme generovat jenom zmenene soubory, jinak vsechny
+			if(filemtime($layoutPath) < $lastBuildDate->getTimestamp())	// TODO: nespolehat se na timestamp
+			{
+				\Cli\Cli::log('Mode: updating');
+				$finder = $finder->date('>', $lastBuildDate);
+			}
+		}
+		
+		
+		// Make output directory
+		\Cli\Cli::log("Preparing...");
+		$generator->prepare();
+		
+		
+		// Scanning & generating
+		\Cli\Cli::log("Scanning...");
+		foreach($finder->from($inputDirectory)
+			->exclude('.git') as $filePath => $fileInfo)
+		{
+			\Cli\Cli::log($filePath);
+			$generator->generate($filePath, $fileInfo);
+		}
+		
+		// Save datetime of build
+		\Cli\Cli::log("Saving last build infos...");
+		\WebGen\Generator::setLastBuildDate($dir . '/lastBuild.dat', new DateTime);
+		
+		
+		\Cli\Cli::log("Done.\n");
+		
+	}
+	catch(Exception $e)
+	{
+		echo 'Fatal error: ' . $e->getMessage() . "\n";
+	}
+

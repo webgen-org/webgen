@@ -1,0 +1,17 @@
+[2012-05-29 11-45-43] PHP Notice: The variable 'file' does not exist in template. in /home/honza/www/webgen2/libs/Nette/nette.min.php:5746  @  cli: ../webgen.phpc --run
+[2012-05-29 11-45-43] PHP Warning: file_get_contents(): Filename cannot be empty in /home/honza/www/webgen2/libs/Webgen/FileTemplate.php:20  @  cli: ../webgen.phpc --run
+[2012-05-29 11-46-41] PHP Notice: The variable 'file' does not exist in template. in /home/honza/www/webgen2/libs/Nette/nette.min.php:5746  @  cli: ../webgen.phpc --run
+[2012-05-29 11-46-41] PHP Warning: file_get_contents(): Filename cannot be empty in /home/honza/www/webgen2/libs/Webgen/FileTemplate.php:20  @  cli: ../webgen.phpc --run
+[2012-05-29 11-47-03] PHP Notice: The variable 'file' does not exist in template. in /home/honza/www/webgen2/libs/Nette/nette.min.php:5746  @  cli: ../webgen.phpc --run
+[2012-05-29 11-47-03] PHP Warning: file_get_contents(): Filename cannot be empty in /home/honza/www/webgen2/libs/Webgen/FileTemplate.php:20  @  cli: ../webgen.phpc --run
+[2012-05-29 11-47-46] PHP Notice: The variable 'file' does not exist in template. in /home/honza/www/webgen2/libs/Nette/nette.min.php:5746  @  cli: ../webgen.phpc --run
+[2012-05-29 11-47-46] PHP Warning: file_get_contents(): Filename cannot be empty in /home/honza/www/webgen2/libs/Webgen/FileTemplate.php:20  @  cli: ../webgen.phpc --run
+[2012-05-29 11-48-21] PHP Notice: The variable 'file' does not exist in template. in /home/honza/www/webgen2/libs/Nette/nette.min.php:5746  @  cli: ../webgen.phpc --run
+[2012-05-29 11-48-21] PHP Warning: file_get_contents(): Filename cannot be empty in /home/honza/www/webgen2/libs/Webgen/FileTemplate.php:20  @  cli: ../webgen.phpc --run
+[2012-05-29 11-48-47] PHP Notice: The variable 'file' does not exist in template. in /home/honza/www/webgen2/libs/Nette/nette.min.php:5746  @  cli: ../webgen.phpc --run
+[2012-05-29 11-48-47] PHP Warning: file_get_contents(): Filename cannot be empty in /home/honza/www/webgen2/libs/Webgen/FileTemplate.php:20  @  cli: ../webgen.phpc --run
+[2012-05-29 11-48-57] PHP Notice: The variable 'file' does not exist in template. in /home/honza/www/webgen2/libs/Nette/nette.min.php:5746  @  cli: ../webgen.phpc --run
+[2012-05-29 11-48-57] PHP Warning: file_get_contents(): Filename cannot be empty in /home/honza/www/webgen2/libs/Webgen/FileTemplate.php:20  @  cli: ../webgen.phpc --run
+[2012-05-29 11-49-16] PHP Notice: The variable 'file' does not exist in template. in /home/honza/www/webgen2/libs/Nette/nette.min.php:5746  @  cli: ../webgen.phpc --run
+[2012-05-29 11-49-16] PHP Warning: file_get_contents(): Filename cannot be empty in /home/honza/www/webgen2/libs/Webgen/FileTemplate.php:20  @  cli: ../webgen.phpc --run
+[2012-05-29 12-53-55] PHP Warning: file_get_contents(): Filename cannot be empty in /home/honza/www/webgen2/libs/Webgen/FileTemplate.php:23  @  cli: ../webgen.phpc --run

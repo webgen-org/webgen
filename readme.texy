@@ -1,0 +1,35 @@
+
+Webgen 2 - generator of static sites
+####################################
+
+Directories
+===========
+
+./my_sites_dir/
+	output/
+		version_1
+			...
+		version_2
+			...
+		version_N
+			...
+	input/
+		[index.texy]
+		[subcategory/]
+			[article.texy]
+	config.neon
+	texyConfig.php
+	@layout.latte
+
+
+Config
+======
+
+- config.neon
+- texyConfig.php
+
+
+
+Homepage: http://janpecha.iunas.cz/webgen/
+License: see file license.txt
+
