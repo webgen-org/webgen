@@ -130,7 +130,7 @@
 			$template = $this->templateRegisterLatte($template);
 			
 			// Register helpers
-			$template->registerHelperLoader('\Nette\Templating\DefaultHelpers::loader');
+			$template->registerHelperLoader('\Nette\Templating\Helpers::loader');
 			
 			return $template;
 		}
