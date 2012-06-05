@@ -16,7 +16,7 @@
 			
 			$this->setOutputMode(self::HTML5);
 			
-			$this->mergeLines = FALSE;
+			$this->mergeLines = TRUE;
 			$this->tabWidth = 4;
 			
 			// htmlOutputModule settings
