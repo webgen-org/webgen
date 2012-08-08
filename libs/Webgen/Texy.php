@@ -32,6 +32,10 @@
 			$this->headingModule->generateID = true;
 			$this->headingModule->idPrefix = '';
 			$this->headingModule->top = 2;
+			
+			
+			// scriptModule settings
+			$this->allowed['script'] = TRUE;
 		}
 	}
 

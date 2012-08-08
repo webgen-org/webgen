@@ -28,6 +28,9 @@
 		/** @var  string|NULL */
 		public $topTitle = NULL;
 		
+		/** @var  FileTemplate */
+		protected $template;
+		
 		
 		
 		public function prepare()
@@ -48,8 +51,7 @@
 		public function generate($filePath, \SplFileInfo $fileInfo)
 		{
 			$this->topTitle = NULL;
-			
-			$template = $this->createTemplate();
+			$this->template = $template = $this->createTemplate();
 			$texy = new \Webgen\Texy($this->config['variables']['baseDir']);
 			
 			$titleBlock = '';
@@ -63,6 +65,7 @@
 			if($fileExtension === 'texy')
 			{
 				$texyFilter = new TexyFilter($this->config['variables']['baseDir']);
+				$texyFilter->addHandler('script', callback($this, 'scriptHandler'));
 				$texyFilter->addHandler('heading', callback($this, 'headingHandler'));
 				
 				$filters[] = $texyFilter;
@@ -134,6 +137,40 @@
 				$this->topTitle = $content;
 #				echo "\na\n";
 				return '';
+			}
+			
+			return $invocation->proceed();
+		}
+		
+		
+		
+		/**
+		 * @param TexyHandlerInvocation  handler invocation
+		 * @param string  command
+		 * @param array   arguments
+		 * @param string  arguments in raw format
+		 * @return TexyHtml|string|FALSE
+		 */
+		public function scriptHandler($invocation, $cmd, $args, $raw)
+		{
+#			echo 'CMD: ', $cmd, "\n";
+#				echo 'ARGS: ', $args[0], "\n";
+#				echo 'RAW: ', $raw, "\n";
+#				echo "$var\n--\n";
+			if($cmd[0] === '_')
+			{
+				$var = substr($cmd, 1);
+				
+				if(isset($args[0]))
+				{
+					$this->template->$var = $args[0];
+					
+					return '';
+				}
+				else
+				{
+					return (string)$this->template->$var;
+				}
 			}
 			
 			return $invocation->proceed();
