@@ -3,19 +3,19 @@
 	 * @author		Jan Pecha, <janpecha@email.cz>
 	 * @license		http://janpecha.iunas.cz/webgen/#license
 	 * @link		http://janpecha.iunas.cz/
-	 * @version		2012-05-29-1
+	 * @version		2012-08-08-1
 	 */
 	
 	namespace Webgen;
 	
 	class TexyFilter extends Texy
 	{
-		public function __construct($baseDir)
-		{
-			parent::__construct($baseDir);
-			
-			$this->headingModule->top = 1;
-		}
+		#public function __construct($baseDir)
+		#{
+		#	parent::__construct($baseDir);
+		#	
+		#	$this->headingModule->top = 1;
+		#}
 		
 		
 		
@@ -37,12 +37,12 @@
 		protected function transformToLatte($html)
 		{
 			// Add #title
-			$source = '{block #title}'
-				. $this->headingModule->title
-				. "{/block}\n";
+#			$source = '{block #title}'
+#				. $this->headingModule->title
+#				. "{/block}\n";
 			
 			// Add #content
-			$source .= '{block #content}' . $html;
+			$source = '{block #content}' . $html;
 			
 			return $source;
 		}

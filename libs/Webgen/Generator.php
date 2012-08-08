@@ -3,7 +3,7 @@
 	 * @author		Jan Pecha, <janpecha@email.cz>
 	 * @license		http://janpecha.iunas.cz/webgen/#license
 	 * @link		http://janpecha.iunas.cz/
-	 * @version		2012-05-29-1
+	 * @version		2012-08-08-1
 	 */
 	
 	namespace Webgen;
@@ -25,6 +25,9 @@
 		/** @var string */
 		public $outputFileDirectory;
 		
+		/** @var  string|NULL */
+		public $topTitle = NULL;
+		
 		
 		
 		public function prepare()
@@ -44,8 +47,11 @@
 		
 		public function generate($filePath, \SplFileInfo $fileInfo)
 		{
+			$this->topTitle = NULL;
+			
 			$template = $this->createTemplate();
 			$texy = new \Webgen\Texy($this->config['variables']['baseDir']);
+			
 			$titleBlock = '';
 			$filters = array();
 			
@@ -56,7 +62,11 @@
 			
 			if($fileExtension === 'texy')
 			{
-				$filters[] = new TexyFilter($this->config['variables']['baseDir']);
+				$texyFilter = new TexyFilter($this->config['variables']['baseDir']);
+				$texyFilter->addHandler('heading', callback($this, 'headingHandler'));
+				
+				$filters[] = $texyFilter;
+				$filters[] = callback($this, 'texyAfterFilter');
 			}
 			elseif($fileExtension === 'latte')
 			{
@@ -105,6 +115,38 @@
 			
 			// -- Save to file
 			$template->save($fileName);
+		}
+		
+				
+		
+		/**
+		 * @param  TexyHandlerInvocation  handler invocation
+		 * @param  int
+		 * @param  string
+		 * @param  TexyModifier
+		 * @param  bool
+		 * @return TexyHtml|string|FALSE
+		 */
+		public function headingHandler($invocation, $level, $content, $modifier, $isSurrounded)
+		{
+			if($this->topTitle === NULL/* && $level == 0*/)
+			{
+				$this->topTitle = $content;
+#				echo "\na\n";
+				return '';
+			}
+			
+			return $invocation->proceed();
+		}
+		
+		
+		
+		public function texyAfterFilter($s)
+		{
+			return '{block #title}'
+				. $this->topTitle
+				. "{/block}\n"
+				. $s;
 		}
 		
 		
