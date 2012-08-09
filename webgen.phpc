@@ -3,7 +3,7 @@
 	 * @author		Jan Pecha, <janpecha@email.cz>
 	 * @license		http://janpecha.iunas.cz/webgen/#license
 	 * @link		http://janpecha.iunas.cz/
-	 * @version		2012-05-29-1
+	 * @version		2012-08-09-1
 	 */
 
 	require __DIR__ . '/libs/Nette/nette.min.php';
@@ -32,6 +32,10 @@ Webgen 2.0
 ----------
 Usage:
 	php -f webgen.phpc -- --run
+
+Parameters:
+	--run
+	--force			regenerating all files
 
 <?php
 			exit;
@@ -90,15 +94,19 @@ Usage:
 		
 		$finder = Finder::findFiles('*.texy', '*.latte');
 		
-		$lastBuildDate = \Webgen\Generator::getLastBuildDate($dir . '/lastBuild.dat');
 		
-		if($lastBuildDate !== FALSE)
+		if(!isset($params['force']))
 		{
-			// kdyz nebyl od posledne zmenen layout => muzeme generovat jenom zmenene soubory, jinak vsechny
-			if(filemtime($layoutPath) < $lastBuildDate->getTimestamp())	// TODO: nespolehat se na timestamp
+			$lastBuildDate = \Webgen\Generator::getLastBuildDate($dir . '/lastBuild.dat');
+		
+			if($lastBuildDate !== FALSE)
 			{
-				\Cli\Cli::log('Mode: updating');
-				$finder = $finder->date('>', $lastBuildDate);
+				// kdyz nebyl od posledne zmenen layout => muzeme generovat jenom zmenene soubory, jinak vsechny
+				if(filemtime($layoutPath) < $lastBuildDate->getTimestamp())	// TODO: nespolehat se na timestamp
+				{
+					\Cli\Cli::log('Mode: updating');
+					$finder = $finder->date('>', $lastBuildDate);
+				}
 			}
 		}
 		
@@ -127,6 +135,6 @@ Usage:
 	}
 	catch(Exception $e)
 	{
-		echo 'Fatal error: ' . $e->getMessage() . "\n";
+		echo 'Fatal error: ' . $e->getMessage() . " (on line {$e->getLine()} in file {$e->getFile()})\n";
 	}
 
