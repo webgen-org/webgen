@@ -3,13 +3,18 @@
 	 * @author		Jan Pecha, <janpecha@email.cz>
 	 * @license		http://janpecha.iunas.cz/webgen/#license
 	 * @link		http://janpecha.iunas.cz/
-	 * @version		2012-08-11-1
+	 * @version		2012-08-11-2
 	 */
 	
 	namespace Cli;
 	
 	class Cli
 	{
+		/** @var  bool|NULL */
+		protected static $isWindows = NULL;
+		
+		
+		
 		/**
 		 * @param	string
 		 * @return	void
@@ -27,6 +32,16 @@
 		 */
 		public static function error($str)
 		{
+			if(self::$isWindows === NULL)
+			{
+				self::detectOs();
+			}
+			
+			if(!self::$isWindows)
+			{
+				$str = "\033[31m" . $str . "\033[37m\r\n"
+			}
+			
 			fwrite(STDERR, $str);
 		}
 		
@@ -111,6 +126,23 @@
 			}
 			
 			return $currentDir . '/' . $dir;
+		}
+		
+		
+		
+		/**
+		 * @return	void
+		 */
+		protected static function detectOs()
+		{
+			if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+			{
+				self::$isWindows = TRUE;
+			}
+			else
+			{
+				self::$isWindows = FALSE;
+			}
 		}
 	}
 
