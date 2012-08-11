@@ -1,0 +1,20 @@
+# Example Config
+# This is default configure.
+#
+# Visit http://ne-on.org/ for syntax details.
+#
+# Config file is optional.
+#
+
+input:
+	layout: '@layout.latte'
+	dir: input
+
+
+output:
+	dir: output
+	ext: html
+
+
+variables:
+	baseDir: ''
