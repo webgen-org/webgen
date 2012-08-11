@@ -11,6 +11,18 @@ Features
 * Latte templates support (http://doc.nette.org/en/templating#toc-latte)
 
 
+Usage
+*****
+
+/--- code
+
+cd MyWeb
+php -f /path/to/webgen.phpc -- --run
+# or 'webgen --run' (see file bin/readme.txt for details)
+
+\---
+
+
 License
 *******
 
