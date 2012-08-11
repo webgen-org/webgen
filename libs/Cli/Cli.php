@@ -3,16 +3,31 @@
 	 * @author		Jan Pecha, <janpecha@email.cz>
 	 * @license		http://janpecha.iunas.cz/webgen/#license
 	 * @link		http://janpecha.iunas.cz/
-	 * @version		2012-05-23-1
+	 * @version		2012-08-11-1
 	 */
 	
 	namespace Cli;
 	
 	class Cli
 	{
+		/**
+		 * @param	string
+		 * @return	void
+		 */
 		public static function log($str)
 		{
 			echo "$str\n";
+		}
+		
+		
+		
+		/**
+		 * @param	string
+		 * @return	void
+		 */
+		public static function error($str)
+		{
+			fwrite(STDERR, $str);
 		}
 		
 		
