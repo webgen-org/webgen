@@ -3,7 +3,7 @@
 	 * @author		Jan Pecha, <janpecha@email.cz>
 	 * @license		http://janpecha.iunas.cz/webgen/#license
 	 * @link		http://janpecha.iunas.cz/
-	 * @version		2012-08-11-2
+	 * @version		2012-08-13-1
 	 */
 	
 	namespace Cli;
@@ -39,7 +39,7 @@
 			
 			if(!self::$isWindows)
 			{
-				$str = "\033[31m" . $str . "\033[37m\r\n"
+				$str = "\033[31m" . $str . "\033[37m\r\n";
 			}
 			
 			fwrite(STDERR, $str);
