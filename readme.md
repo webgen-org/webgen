@@ -29,5 +29,5 @@ See file ```license.txt``` or visit http://janpecha.iunas.cz/webgen/#license.
 
 
 (c) Jan Pecha, 2012
-http://janpecha.iunas.cz/
-http://janpecha.iunas.cz/webgen/
+<br>http://janpecha.iunas.cz/
+<br>http://janpecha.iunas.cz/webgen/
