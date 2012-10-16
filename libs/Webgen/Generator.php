@@ -3,7 +3,7 @@
 	 * @author		Jan Pecha, <janpecha@email.cz>
 	 * @license		http://janpecha.iunas.cz/webgen/#license
 	 * @link		http://janpecha.iunas.cz/
-	 * @version		2012-08-08-1
+	 * @version		2012-10-16-1
 	 */
 	
 	namespace Webgen;
@@ -218,7 +218,17 @@
 		
 		protected function templateRegisterLatte($template)
 		{
-			return $template->registerFilter(new \Nette\Latte\Engine);
+			$latte = new \Nette\Latte\Engine;
+			$xhtml = isset($this->config['output']['xhtml']) && $this->config['output']['xhtml'];
+			
+			if(!$xhtml)
+			{
+				$latte->getCompiler()->defaultContentType = \Nette\Latte\Compiler::CONTENT_HTML;
+			}
+			
+			\Nette\Utils\Html::$xhtml = $xhtml;
+			
+			return $template->registerFilter($latte);
 		}
 		
 		
