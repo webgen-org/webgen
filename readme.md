@@ -32,6 +32,8 @@ Webgen currently creates subdirectories (eg. `2013-12-12_14:15:16`) in output di
 You can use parameter ```--onedir``` for disabling of subdirectories creating. This parameter ignores date of last generating too (generates all files).
 
 
+------------------------------
+
 License: [New BSD License](license.txt)
 <br>Author: Jan Pecha, http://janpecha.iunas.cz/webgen
 
