@@ -57,6 +57,7 @@ Parameters:
 			'output' => array(
 				'dir' => 'output',	// name of output directory
 				'ext' => 'html',	// output file extension
+				'purge' => FALSE,   // purge output directory?
 			),
 
 			'variables' => array(
@@ -164,7 +165,7 @@ Parameters:
 
 		// Make output directory
 		\Cli\Cli::log("Preparing...");
-		$generator->prepare(!isset($params['onedir']));
+		$generator->prepare(!isset($params['onedir']), $config['output']['purge']);
 
 		// Scanning & generating
 		\Cli\Cli::log("Scanning...");

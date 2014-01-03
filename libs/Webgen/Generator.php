@@ -32,7 +32,7 @@
 
 
 
-		public function prepare($versioned)
+		public function prepare($versioned, $purge = FALSE)
 		{
 			if($this->config === NULL)
 			{
@@ -44,7 +44,12 @@
 			if ($versioned) {
 				$this->outputFileDirectory .= '/' . date('Y-m-d_H-i-s');
 			}
-			$this->purgeDir($this->outputFileDirectory); // purges directory, ignores hidden files (.gitignore, .htaccess)
+
+			if ($purge) {
+				$this->purgeDir($this->outputFileDirectory); // purges directory, ignores hidden files (.gitignore, .htaccess)
+			} else {
+				$this->makeDir($this->outputFileDirectory);
+			}
 		}
 
 
