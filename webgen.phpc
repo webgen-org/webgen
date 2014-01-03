@@ -13,19 +13,19 @@
 	require __DIR__ . '/libs/Webgen/TexyFilter.php';
 	require __DIR__ . '/libs/Webgen/FileTemplate.php';
 	require __DIR__ . '/libs/Cli/Cli.php';
-	
-	
+
+
 	use Nette\Utils\Finder;
-	
+
 	date_default_timezone_set('Europe/Prague');
-	
+
 #	\Nette\Diagnostics\Debugger::$strictMode = FALSE;
 #	\Nette\Diagnostics\Debugger::enable(\Nette\Diagnostics\Debugger::DEVELOPMENT, FALSE);
-	
+
 	try
 	{
 		$params = \Cli\Cli::parseParams($_SERVER['argv']);
-	
+
 		if($params === FALSE || !isset($params['run']))
 		{
 ?>
@@ -42,59 +42,59 @@ Parameters:
 <?php
 			exit;
 		}
-		
-		
+
+
 		$dir = getcwd();
-		
+
 		// Init
 		if(!is_file($dir . '/@layout.latte'))
 		{
 			\Cli\Cli::error("\nError: File '$dir/@layout.latte' is not exists.\n\n");
 			exit(10);
 		}
-		
+
 		if(!is_dir($dir . '/input'))
 		{
 			\Cli\Cli::error("\nError: Directory '$dir/input' is not exists.\n\n");
 			exit(11);
 		}
-		
-		
+
+
 		// Config
 		$configPath = $dir . '/config.neon';
-		
+
 		$defaultConfig = array(
 			'input' => array(
 				'layout' => '@layout.latte',	// name of layout file
 				'dir' => 'input', // name of input directory
 			),
-			
+
 			'output' => array(
 				'dir' => 'output',	// name of output directory
 				'ext' => 'html',	// output file extension
 			),
-			
+
 			'variables' => array(
 				'baseDir' => '',	// baseDir variable, etc. '/my_web_subdir'
 			),
 		);
-		
-		
+
+
 		// Load NEON config
 		\Cli\Cli::log('Load config...');
 		$config = file_get_contents($configPath);
-		
+
 		if(is_string($config))
 		{
 			$config = \Nette\Utils\Neon::decode($config);
 		}
-		
+
 		if(is_array($config))
 		{
 			//$config = $config + $defaultConfig;
 			$userConfig = $config;
 			$config = array();
-			
+
 			// Input configuration
 			if(isset($userConfig['input']))
 			{
@@ -104,7 +104,7 @@ Parameters:
 			{
 				$config['input'] = $defaultConfig['input'];
 			}
-			
+
 			// Output configuration
 			if(isset($userConfig['output']))
 			{
@@ -114,7 +114,7 @@ Parameters:
 			{
 				$config['output'] = $defaultConfig['output'];
 			}
-			
+
 			// Variables
 			if(isset($userConfig['variables']))
 			{
@@ -127,32 +127,32 @@ Parameters:
 		}
 		else
 		{
-			$config = $defaultConfig;	
+			$config = $defaultConfig;
 		}
-		
-		
+
+
 		// Settings
 		$inputDirectory = \Cli\Cli::formatPath($config['input']['dir'], $dir);
 		$outputDirectory = \Cli\Cli::formatPath($config['output']['dir'], $dir);
 		$layoutPath = \Cli\Cli::formatPath($config['input']['layout'], $dir);
-		
-		
+
+
 		// Generating
 		\Cli\Cli::log('Generating...');
-		
+
 		$generator = new \Webgen\Generator;
 		$generator->config = $config;
 		$generator->inputDirectory = $inputDirectory;
 		$generator->outputDirectory = $outputDirectory;
 		$generator->layoutPath = $layoutPath;
-		
+
 		$finder = Finder::findFiles('*.texy', '*.latte');
-		
-		
+
+
 		if(!isset($params['force']) && !isset($params['onedir']))
 		{
 			$lastBuildDate = \Webgen\Generator::getLastBuildDate($dir . '/lastBuild.dat');
-		
+
 			if($lastBuildDate !== FALSE)
 			{
 				// kdyz nebyl od posledne zmenen layout => muzeme generovat jenom zmenene soubory, jinak vsechny
@@ -163,12 +163,12 @@ Parameters:
 				}
 			}
 		}
-		
-		
+
+
 		// Make output directory
 		\Cli\Cli::log("Preparing...");
 		$generator->prepare(!isset($params['onedir']));
-		
+
 		// Scanning & generating
 		\Cli\Cli::log("Scanning...");
 		foreach($finder->from($inputDirectory)
@@ -177,14 +177,14 @@ Parameters:
 			\Cli\Cli::log($filePath);
 			$generator->generate($filePath, $fileInfo);
 		}
-		
+
 		// Save datetime of build
 		\Cli\Cli::log("Saving last build infos...");
 		\WebGen\Generator::setLastBuildDate($dir . '/lastBuild.dat', new DateTime);
-		
-		
+
+
 		\Cli\Cli::log("Done.\n");
-		
+
 	}
 	catch(Exception $e)
 	{

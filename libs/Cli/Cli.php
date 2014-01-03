@@ -5,16 +5,16 @@
 	 * @link		http://janpecha.iunas.cz/
 	 * @version		2012-08-13-1
 	 */
-	
+
 	namespace Cli;
-	
+
 	class Cli
 	{
 		/** @var  bool|NULL */
 		protected static $isWindows = NULL;
-		
-		
-		
+
+
+
 		/**
 		 * @param	string
 		 * @return	void
@@ -23,9 +23,9 @@
 		{
 			echo "$str\n";
 		}
-		
-		
-		
+
+
+
 		/**
 		 * @param	string
 		 * @return	void
@@ -36,17 +36,17 @@
 			{
 				self::detectOs();
 			}
-			
+
 			if(!self::$isWindows)
 			{
 				$str = "\033[31m" . $str . "\033[37m\r\n";
 			}
-			
+
 			fwrite(STDERR, $str);
 		}
-		
-		
-		
+
+
+
 		/**
 		 * @param	array
 		 * @return	array|FALSE
@@ -55,12 +55,12 @@
 		{
 			$params = array();
 			$lastName = NULL;
-			
+
 			if(isset($argv[1]))		// count($argv) > 1
 			{
 				// remove argv[0]
 				array_shift($argv);
-				
+
 				// parsing
 				foreach($argv as $argument)
 				{
@@ -68,7 +68,7 @@
 					{
 						$name = trim($argument, '-');
 						$lastName = $name;
-					
+
 						if(!isset($params[$name]))
 						{
 							$params[$name] = TRUE;
@@ -92,27 +92,27 @@
 									$params[$lastName],
 									$argument,
 								);
-							
+
 								$params[$lastName] = $newParams;
 							}
 							else
 							{
 								$params[$lastName][] = $argument;
 							}
-						
+
 							$lastName = NULL;
 						}
 					}
 				}
-				
+
 				return $params;
 			}
-			
+
 			return FALSE;
 		}
-		
-		
-		
+
+
+
 		/**
 		 * @param	string
 		 * @param	string
@@ -124,12 +124,12 @@
 			{
 				return $dir;
 			}
-			
+
 			return $currentDir . '/' . $dir;
 		}
-		
-		
-		
+
+
+
 		/**
 		 * @return	void
 		 */
