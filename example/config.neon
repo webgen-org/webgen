@@ -1,5 +1,5 @@
-# Example Config
-# This is default configure.
+#
+# This is default configuration.
 #
 # Visit http://ne-on.org/ for syntax details.
 #
@@ -7,14 +7,14 @@
 #
 
 input:
-	layout: '@layout.latte'
-	dir: input
+	layout: '@layout.latte'  # template with layout
+	dir: input   # directory with source files
 
 
 output:
-	dir: output
-	ext: html
-	xhtml: on
+	dir: output  # output directory
+	ext: html    # output files extension
+	xhtml: on    # enables or disables XHTML output
 
 
 variables:
