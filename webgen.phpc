@@ -35,8 +35,8 @@ Usage:
 	php -f webgen.phpc -- --run
 
 Parameters:
-	--run
-	--force			regenerating all files
+	--run           enables generating [required]
+	--force         regenerates all files (not only changed)
 
 <?php
 			exit;
