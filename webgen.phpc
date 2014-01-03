@@ -29,7 +29,7 @@
 		if($params === FALSE || !isset($params['run']))
 		{
 ?>
-Webgen 2.0.1
+Webgen 2.0.2
 ------------
 Usage:
 	php -f webgen.phpc -- --run
@@ -45,20 +45,6 @@ Parameters:
 
 
 		$dir = getcwd();
-
-		// Init
-		if(!is_file($dir . '/@layout.latte'))
-		{
-			\Cli\Cli::error("\nError: File '$dir/@layout.latte' is not exists.\n\n");
-			exit(10);
-		}
-
-		if(!is_dir($dir . '/input'))
-		{
-			\Cli\Cli::error("\nError: Directory '$dir/input' is not exists.\n\n");
-			exit(11);
-		}
-
 
 		// Config
 		$configPath = $dir . '/config.neon';
@@ -135,6 +121,18 @@ Parameters:
 		$inputDirectory = \Cli\Cli::formatPath($config['input']['dir'], $dir);
 		$outputDirectory = \Cli\Cli::formatPath($config['output']['dir'], $dir);
 		$layoutPath = \Cli\Cli::formatPath($config['input']['layout'], $dir);
+
+		if(!is_file($layoutPath))
+		{
+			\Cli\Cli::error("\nError: File '$layoutPath' is not exists.\n\n");
+			exit(10);
+		}
+
+		if(!is_dir($inputDirectory))
+		{
+			\Cli\Cli::error("\nError: Directory '$inputDirectory' is not exists.\n\n");
+			exit(11);
+		}
 
 
 		// Generating
