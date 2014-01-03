@@ -29,14 +29,15 @@
 		if($params === FALSE || !isset($params['run']))
 		{
 ?>
-Webgen 2.0
-----------
+Webgen 2.0.1
+------------
 Usage:
 	php -f webgen.phpc -- --run
 
 Parameters:
 	--run           enables generating [required]
 	--force         regenerates all files (not only changed)
+	--onedir        no subdirectories in output directory
 
 <?php
 			exit;
@@ -148,7 +149,7 @@ Parameters:
 		$finder = Finder::findFiles('*.texy', '*.latte');
 		
 		
-		if(!isset($params['force']))
+		if(!isset($params['force']) && !isset($params['onedir']))
 		{
 			$lastBuildDate = \Webgen\Generator::getLastBuildDate($dir . '/lastBuild.dat');
 		
@@ -166,8 +167,7 @@ Parameters:
 		
 		// Make output directory
 		\Cli\Cli::log("Preparing...");
-		$generator->prepare();
-		
+		$generator->prepare(!isset($params['onedir']));
 		
 		// Scanning & generating
 		\Cli\Cli::log("Scanning...");

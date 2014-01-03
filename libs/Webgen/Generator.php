@@ -33,7 +33,7 @@
 		
 		
 		
-		public function prepare()
+		public function prepare($versioned)
 		{
 			if($this->config === NULL)
 			{
@@ -41,9 +41,11 @@
 			}
 			
 			// Make output directory
-			$this->outputFileDirectory = $this->outputDirectory . '/' . date('Y-m-d_H-i-s');
-			$this->makeDir($this->outputFileDirectory);
-			
+			$this->outputFileDirectory = $this->outputDirectory;
+			if ($versioned) {
+				$this->outputFileDirectory .= '/' . date('Y-m-d_H-i-s');
+			}
+			$this->purgeDir($this->outputFileDirectory); // purges directory, ignores hidden files (.gitignore, .htaccess)
 		}
 		
 		
@@ -196,6 +198,28 @@
 			}
 			
 			return mkdir($directory, 0777, true);
+		}
+
+
+
+		protected function purgeDir($directory)
+		{
+			@mkdir($directory, 0777, TRUE); // @ - directory may already exist
+			foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory), \RecursiveIteratorIterator::CHILD_FIRST) as $entry)
+			{
+				if (substr($entry->getBasename(), 0, 1) === '.') // . or .. or .gitignore (hidden files)
+				{
+					// ignore
+				}
+				elseif ($entry->isDir())
+				{
+					rmdir($entry);
+				}
+				else
+				{
+					unlink($entry);
+				}
+			}
 		}
 		
 		
