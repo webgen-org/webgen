@@ -1,0 +1,26 @@
+
+{default $printAnchors = true}
+
+{var $pages = array(
+		'index.html' => 'Index',
+		'articles/article-1.html' => 'Article 1',
+		'articles/article-2.html' => 'Article 2',
+	)}
+
+<ul n:if="!$printAnchors">
+	<li n:foreach="$pages as $page => $title" n:if="!$webgen::isPathCurrent($page, 'index.html')"> {* skips index.html *}
+		<a href="{$webgen->createRelativeLink($page)}">{$title}</a>
+	</li>
+</ul>
+
+{if $printAnchors}
+	{foreach $pages as $page => $title}
+		{if $webgen->isLinkCurrent(str_replace('.html', '.*', $page))}
+			<strong>{$title}</strong>
+		{else}
+			<a href="{$webgen->createRelativeLink($page)}">{$title}</a>
+		{/if}
+		{sep}|{/sep} {* separator *}
+	{/foreach}
+{/if}
+
