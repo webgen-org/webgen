@@ -58,7 +58,9 @@ Parameters:
 			'output' => array(
 				'dir' => 'output',	// name of output directory
 				'ext' => 'html',	// output file extension
+				'xhtml' => TRUE,	// enables or disables XHTML output
 				'purge' => FALSE,   // purge output directory?
+				'onedir' => FALSE,
 			),
 
 			'variables' => array(
@@ -119,6 +121,10 @@ Parameters:
 
 
 		// Settings
+		if (isset($params['onedir'])) {
+			$config['output']['onedir'] = TRUE;
+		}
+
 		$inputDirectory = \Cli\Cli::formatPath($config['input']['dir'], $dir);
 		$outputDirectory = \Cli\Cli::formatPath($config['output']['dir'], $dir);
 		$layoutPath = \Cli\Cli::formatPath($config['input']['layout'], $dir);
@@ -148,7 +154,7 @@ Parameters:
 		$finder = Finder::findFiles('*.texy', '*.latte');
 
 
-		if(!isset($params['force']) && !isset($params['onedir']))
+		if(!isset($params['force']) && !$config['output']['onedir'])
 		{
 			$lastBuildDate = \Webgen\Generator::getLastBuildDate($dir . '/lastBuild.dat');
 
@@ -166,7 +172,7 @@ Parameters:
 
 		// Make output directory
 		\Cli\Cli::log("Preparing...");
-		$generator->prepare(!isset($params['onedir']), $config['output']['purge']);
+		$generator->prepare(!$config['output']['onedir'], $config['output']['purge']);
 
 		// Scanning & generating
 		\Cli\Cli::log("Scanning...");
