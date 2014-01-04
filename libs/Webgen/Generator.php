@@ -30,6 +30,9 @@
 		/** @var  FileTemplate */
 		protected $template;
 
+		/** @var  string|NULL */
+		private $currentFile;
+
 
 
 		public function prepare($versioned, $purge = FALSE)
@@ -54,7 +57,14 @@
 
 
 
-		public function generate($filePath, \SplFileInfo $fileInfo)
+		public function getCurrentFile()
+		{
+			return $this->currentFile;
+		}
+
+
+
+		public function generate($filePath, \SplFileInfo $fileInfo, Webgen $webgenHelper)
 		{
 			$this->topTitle = NULL;
 			$this->template = $template = $this->createTemplate();
@@ -64,6 +74,10 @@
 			$filters = array();
 
 			$template->setFile($filePath);
+			$template->webgen = $webgenHelper;
+
+			// set current file
+			$this->currentFile = $this->shortPath($filePath, $this->inputDirectory);
 
 			// Validate file ext & specific filter registration (Texy! processing, ...)
 			$fileExtension = $fileInfo->getExtension();
@@ -278,6 +292,14 @@
 			$name .= '/' . $fileInfo->getBasename($fileInfo->getExtension());
 
 			return $name . $this->config['output']['ext'];
+		}
+
+
+
+		private function shortPath($filepath, $rootDirectory)
+		{
+			$rootDirectory = rtrim($rootDirectory, '/') . '/';
+			return substr($filepath, strlen($rootDirectory));
 		}
 
 

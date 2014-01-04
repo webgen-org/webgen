@@ -11,6 +11,7 @@
 	require __DIR__ . '/libs/Webgen/Texy.php';
 	require __DIR__ . '/libs/Webgen/TexyFilter.php';
 	require __DIR__ . '/libs/Webgen/FileTemplate.php';
+	require __DIR__ . '/libs/Webgen/Webgen.php';
 	require __DIR__ . '/libs/Cli/Cli.php';
 
 
@@ -169,6 +170,9 @@ Parameters:
 
 		// Scanning & generating
 		\Cli\Cli::log("Scanning...");
+
+		$webgenHelper = new \Webgen\Webgen($generator);
+
 		foreach($finder->from($inputDirectory)
 			->exclude('.git') as $filePath => $fileInfo)
 		{
@@ -178,7 +182,7 @@ Parameters:
 				continue;
 			}
 			\Cli\Cli::log($filePath);
-			$generator->generate($filePath, $fileInfo);
+			$generator->generate($filePath, $fileInfo, $webgenHelper);
 		}
 
 		// Save datetime of build
