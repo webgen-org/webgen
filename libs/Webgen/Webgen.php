@@ -125,15 +125,13 @@
 			}
 
 			// build pattern
-			$_mask = rtrim($mask, '*');
-			$addOnEnd = ($mask !== $_mask);
 			$pattern = strtr(preg_quote($mask, '#'), array(
 				'\*\*' => '.*',
 				'\*' => '[^/]*',
 			));
 
 			// match
-			return (bool) preg_match('#^' . $pattern . ($addOnEnd ? '.*' : '') . '\z#i', $currentPath);
+			return (bool) preg_match('#^' . $pattern . '\z#i', $currentPath);
 		}
 	}
 
