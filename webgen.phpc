@@ -172,6 +172,11 @@ Parameters:
 		foreach($finder->from($inputDirectory)
 			->exclude('.git') as $filePath => $fileInfo)
 		{
+			$filename = $fileInfo->getFilename();
+			if ($filename[0] === '@') {
+				\Cli\Cli::log("[ignored] $filePath");
+				continue;
+			}
 			\Cli\Cli::log($filePath);
 			$generator->generate($filePath, $fileInfo);
 		}
