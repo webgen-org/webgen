@@ -17,7 +17,7 @@ Usage
 ```
 cd my-web-local-directory
 php -f /path/to/webgen.phpc -- --run
-# or 'webgen --run' (see file bin/readme.txt for details)
+# or 'webgen --run' (see file bin/readme.md for details)
 ```
 
 For example:
