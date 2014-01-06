@@ -24,9 +24,6 @@
 		/** @var string */
 		public $outputFileDirectory;
 
-		/** @var  string|NULL */
-		public $topTitle = NULL;
-
 		/** @var  FileTemplate */
 		protected $template;
 
@@ -66,7 +63,6 @@
 
 		public function generate($filePath, \SplFileInfo $fileInfo, Webgen $webgenHelper)
 		{
-			$this->topTitle = NULL;
 			$this->template = $template = $this->createTemplate();
 			$texy = new \Webgen\Texy($this->config['variables']['baseDir']);
 
@@ -86,10 +82,8 @@
 			{
 				$texyFilter = new TexyFilter($this->config['variables']['baseDir']);
 				$texyFilter->addHandler('script', callback($this, 'scriptHandler'));
-				$texyFilter->addHandler('heading', callback($this, 'headingHandler'));
 
 				$filters[] = $texyFilter;
-				$filters[] = callback($this, 'texyAfterFilter');
 			}
 			elseif($fileExtension === 'latte')
 			{
@@ -143,28 +137,6 @@
 
 
 		/**
-		 * @param  TexyHandlerInvocation  handler invocation
-		 * @param  int
-		 * @param  string
-		 * @param  TexyModifier
-		 * @param  bool
-		 * @return TexyHtml|string|FALSE
-		 */
-		public function headingHandler($invocation, $level, $content, $modifier, $isSurrounded)
-		{
-			if($this->topTitle === NULL/* && $level == 0*/)
-			{
-				$this->topTitle = $content;
-#				echo "\na\n";
-				return '';
-			}
-
-			return $invocation->proceed();
-		}
-
-
-
-		/**
 		 * @param TexyHandlerInvocation  handler invocation
 		 * @param string  command
 		 * @param array   arguments
@@ -194,16 +166,6 @@
 			}
 
 			return $invocation->proceed();
-		}
-
-
-
-		public function texyAfterFilter($s)
-		{
-			return '{block #title}'
-				. $this->topTitle
-				. "{/block}\n"
-				. $s;
 		}
 
 

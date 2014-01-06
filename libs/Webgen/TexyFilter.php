@@ -36,12 +36,12 @@
 		protected function transformToLatte($html)
 		{
 			// Add #title
-#			$source = '{block #title}'
-#				. $this->headingModule->title
-#				. "{/block}\n";
+			$source = '{block #title}'
+				. $this->headingModule->title
+				. "{/block}\n";
 
 			// Add #content
-			$source = '{block #content}' . $html;
+			$source .= '{block #content}' . $html;
 
 			return $source;
 		}

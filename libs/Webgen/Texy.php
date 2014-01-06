@@ -30,7 +30,7 @@
 			// headingModule settings
 			$this->headingModule->generateID = true;
 			$this->headingModule->idPrefix = '';
-			$this->headingModule->top = 2;
+			$this->headingModule->top = 1;
 
 
 			// scriptModule settings
