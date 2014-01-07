@@ -145,10 +145,6 @@
 		 */
 		public function scriptHandler($invocation, $cmd, $args, $raw)
 		{
-#			echo 'CMD: ', $cmd, "\n";
-#				echo 'ARGS: ', $args[0], "\n";
-#				echo 'RAW: ', $raw, "\n";
-#				echo "$var\n--\n";
 			if($cmd[0] === '_')
 			{
 				$var = substr($cmd, 1);
