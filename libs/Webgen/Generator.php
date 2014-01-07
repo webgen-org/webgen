@@ -50,7 +50,7 @@
 			}
 
 			if ($purge) {
-				$this->purgeDir($this->outputFileDirectory); // purges directory, ignores hidden files (.gitignore, .htaccess)
+				$this->purgeDir($this->outputFileDirectory, $purge !== TRUE ? $purge : NULL); // purges directory, ignores hidden files (.gitignore, .htaccess)
 			} else {
 				$this->makeDir($this->outputFileDirectory);
 			}
@@ -236,24 +236,30 @@
 
 
 
-		protected function purgeDir($directory)
+		protected function purgeDir($directory, $mask)
 		{
 			@mkdir($directory, 0777, TRUE); // @ - directory may already exist
-			foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory), \RecursiveIteratorIterator::CHILD_FIRST) as $entry)
-			{
-				if (substr($entry->getBasename(), 0, 1) === '.') // . or .. or .gitignore (hidden files)
-				{
+
+			\Cli\Cli::log("Purge: \n$directory");
+			foreach (Finder::find($mask)->from($directory)->childFirst() as $entry) {
+				$res = TRUE;
+				if (substr($entry->getBasename(), 0, 1) === '.') { // . or .. or .gitignore (hidden files)
 					// ignore
+					\Cli\Cli::log("[ignored] $entry");
+					continue;
+				} elseif ($entry->isDir()) {
+					$res = @rmdir($entry);
+				} else {
+					$res = @unlink($entry);
 				}
-				elseif ($entry->isDir())
-				{
-					rmdir($entry);
+
+				if (!$res) {
+					\Cli\Cli::log("[skipped] $entry");
+					continue;
 				}
-				else
-				{
-					unlink($entry);
-				}
+				\Cli\Cli::log("[removed] $entry");
 			}
+			\Cli\Cli::log(''); // empty line
 		}
 
 

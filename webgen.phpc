@@ -12,6 +12,7 @@
 	require __DIR__ . '/libs/Webgen/TexyFilter.php';
 	require __DIR__ . '/libs/Webgen/FileTemplate.php';
 	require __DIR__ . '/libs/Webgen/Webgen.php';
+	require __DIR__ . '/libs/Webgen/Finder.php';
 	require __DIR__ . '/libs/Cli/Cli.php';
 
 
