@@ -7,8 +7,8 @@ Simple PHP CLI generator of static web sites.
 Features
 --------
 
-* Texy! support (http://texy.info/)
-* Latte templates support (http://doc.nette.org/en/templating#toc-latte)
+* [Texy!](http://texy.info/) support
+* [Latte templates](http://doc.nette.org/en/templating#toc-latte) support
 
 
 Usage
