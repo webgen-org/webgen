@@ -34,6 +34,9 @@
 		/** @var  array */
 		private $currentFileConfig;
 
+		/** @var  TexyFilter */
+		private $currentTexy;
+
 
 
 		public function prepare($versioned, $purge = FALSE)
@@ -100,8 +103,13 @@
 			{
 				$texyFilter = new TexyFilter($this->config['variables']['baseDir']);
 				$texyFilter->addHandler('script', callback($this, 'scriptHandler'));
+				$texyFilter->addHandler('phrase', callback($this, 'phraseHandler'));
+				$texyFilter->addHandler('linkReference', callback($this, 'linkReferenceHandler'));
+				$texyFilter->addHandler('figure', callback($this, 'figureHandler'));
+				$texyFilter->addHandler('image', callback($this, 'imageHandler'));
 
 				$filters[] = $texyFilter;
+				$this->currentTexy = $texyFilter;
 			}
 			elseif($fileExtension === 'latte')
 			{
@@ -216,6 +224,109 @@
 
 
 
+		/**
+		 * @param  TexyHandlerInvocation  handler invocation
+		 * @param  TexyImage
+		 * @param  TexyLink|NULL
+		 * @return TexyHtml|string|FALSE
+		 */
+		public function imageHandler($invocation, $image, $link)
+		{
+			$this->texyLinkUrl($link);
+			$res = $this->texyImageUrl($image);
+
+			if ($res) {
+				return $this->solveTexyImage($invocation, $image, $link);
+			}
+			return $invocation->proceed();
+		}
+
+
+
+		/**
+		 * @param  TexyHandlerInvocation  handler invocation
+		 * @param  string
+		 * @param  string
+		 * @param  TexyModifier
+		 * @param  TexyLink|NULL
+		 * @return TexyHtml|string|FALSE
+		 */
+		public function phraseHandler($invocation, $phrase, $content, $modifier, $link)
+		{
+			$this->texyLinkUrl($link);
+			return $invocation->proceed();
+		}
+
+
+
+		/**
+		 * @param  TexyHandlerInvocation  handler invocation
+		 * @param  TexyLink
+		 * @param  string
+		 * @return TexyHtml|string|FALSE
+		 */
+		public function linkReferenceHandler($invocation, $link, $content)
+		{
+			$this->texyLinkUrl($link);
+			return $invocation->proceed();
+		}
+
+
+
+		/**
+		 * @param  TexyHandlerInvocation  handler invocation
+		 * @param  TexyImage
+		 * @param  TexyLink|NULL
+		 * @param  string
+		 * @param  TexyModifier
+		 * @return TexyHtml|string|FALSE
+		 */
+		public function figureHandler($invocation, $image, $link, $content, $modifier)
+		{
+			$res = $this->texyImageUrl($image);
+			$this->texyLinkUrl($link);
+
+			if ($res) {
+				return $this->solveTexyFigure($invocation, $image, $link, $content, $modifier);
+			}
+
+			return $invocation->proceed();
+		}
+
+
+
+		/**
+		 * @param  TexyLink|NULL
+		 * @return bool
+		 */
+		protected function texyLinkUrl($link)
+		{
+			if ($link instanceof \TexyLink) {
+				if (isset($link->URL[0]) && $link->URL[0] === '@') {
+					$link->URL = Webgen::makeRelativePath($this->currentFile, substr($link->URL, 1));
+					return TRUE;
+				}
+			}
+			return FALSE;
+		}
+
+
+
+		/**
+		 * @param  TexyImage
+		 * @return bool
+		 */
+		protected function texyImageUrl($image)
+		{
+			if (isset($image->URL[0]) && $image->URL[0] === '@') {
+				$image->URL = Webgen::makeRelativePath($this->currentFile, substr($image->URL, 1));
+				return TRUE;
+			}
+			return FALSE;
+		}
+
+
+
 		protected function makeDir($dir)
 		{
 			if (!is_dir($dir) && !@mkdir($dir, 0777, TRUE)) { // intentionally @; not atomic
@@ -312,7 +423,6 @@
 		}
 
 
-
 		protected function formatOutputFilePath($filePath, \SplFileInfo $fileInfo)
 		{
 			$name = $this->outputFileDirectory;
@@ -329,6 +439,137 @@
 		{
 			$rootDirectory = rtrim($rootDirectory, '/') . '/';
 			return substr($filepath, strlen($rootDirectory));
+		}
+
+
+
+		private function solveTexyImage($invocation, $image, $link)
+		{
+			if ($image->URL == NULL) return FALSE;
+
+			$tx = $this->currentTexy;
+
+			$mod = $image->modifier;
+			$alt = $mod->title;
+			$mod->title = NULL;
+			$hAlign = $mod->hAlign;
+			$mod->hAlign = NULL;
+
+			$el = \TexyHtml::el('img');
+			$el->attrs['src'] = NULL; // trick - move to front
+			$mod->decorate($tx, $el);
+			$el->attrs['src'] = $image->URL;//;Texy::prependRoot($image->URL, $this->root);
+			if (!isset($el->attrs['alt'])) {
+				if ($alt !== NULL) $el->attrs['alt'] = $tx->typographyModule->postLine($alt);
+				else $el->attrs['alt'] = $tx->imageModule->defaultAlt;
+			}
+
+			if ($hAlign) {
+				$var = $hAlign . 'Class'; // leftClass, rightClass
+				if (!empty($tx->imageModule->$var)) {
+					$el->attrs['class'][] = $tx->imageModule->$var;
+
+				} elseif (empty($tx->alignClasses[$hAlign])) {
+					$el->attrs['style']['float'] = $hAlign;
+
+				} else {
+					$el->attrs['class'][] = $tx->alignClasses[$hAlign];
+				}
+			}
+
+			if (!is_int($image->width) || !is_int($image->height) || $image->asMax) {
+				// autodetect fileRoot
+				if ($tx->imageModule->fileRoot === NULL && isset($_SERVER['SCRIPT_FILENAME'])) {
+					$tx->imageModule->fileRoot = dirname($_SERVER['SCRIPT_FILENAME']) . '/' . $tx->imageModule->root;
+				}
+
+				// detect dimensions
+				// absolute URL & security check for double dot
+				if (Texy::isRelative($image->URL)) {
+					$file = rtrim($this->outputFileDirectory, '/\\') . '/' . rtrim(dirname($this->currentFile), '/\\') . '/' . $image->URL;
+					if (@is_file($file)) { // intentionally @
+						$size = @getImageSize($file); // intentionally @
+						if (is_array($size)) {
+							if ($image->asMax) {
+								$ratio = 1;
+								if (is_int($image->width)) $ratio = min($ratio, $image->width / $size[0]);
+								if (is_int($image->height)) $ratio = min($ratio, $image->height / $size[1]);
+								$image->width = round($ratio * $size[0]);
+								$image->height = round($ratio * $size[1]);
+
+							} elseif (is_int($image->width)) {
+								$ratio = round($size[1] / $size[0] * $image->width);
+								$image->height = round($size[1] / $size[0] * $image->width);
+
+							} elseif (is_int($image->height)) {
+								$image->width = round($size[0] / $size[1] * $image->height);
+
+							} else {
+								$image->width = $size[0];
+								$image->height = $size[1];
+							}
+						}
+					}
+				}
+			}
+
+			$el->attrs['width'] = $image->width;
+			$el->attrs['height'] = $image->height;
+
+			// onmouseover actions generate
+			if ($image->overURL !== NULL) {
+				$overSrc = \Texy::prependRoot($image->overURL, $tx->imageModule->root);
+				$el->attrs['onmouseover'] = 'this.src=\'' . addSlashes($overSrc) . '\'';
+				$el->attrs['onmouseout'] = 'this.src=\'' . addSlashes($el->attrs['src']) . '\'';
+				$el->attrs['onload'] = str_replace('%i', addSlashes($overSrc), $tx->imageModule->onLoad);
+				$tx->summary['preload'][] = $overSrc;
+			}
+
+			$tx->summary['images'][] = $el->attrs['src'];
+
+			if ($link) return $tx->linkModule->solve(NULL, $link, $el);
+
+			return $el;
+		}
+
+
+
+		private function solveTexyFigure($invocation, \TexyImage $image, $link, $content, $mod)
+		{
+			$tx = $this->currentTexy;
+
+			$hAlign = $image->modifier->hAlign;
+			$image->modifier->hAlign = NULL;
+
+			$elImg = $this->solveTexyImage(NULL, $image, $link); // returns TexyHtml or false!
+			if (!$elImg) return FALSE;
+
+			$el = \TexyHtml::el('div');
+			if (!empty($image->width) && $tx->figureModule->widthDelta !== FALSE) {
+				$el->attrs['style']['width'] = ($image->width + $tx->figureModule->widthDelta) . 'px';
+			}
+			$mod->decorate($tx, $el);
+
+			$el[0] = $elImg;
+			$el[1] = \TexyHtml::el('p');
+			$el[1]->parseLine($tx, ltrim($content));
+
+			$class = $tx->figureModule->class;
+			if ($hAlign) {
+				$var = $hAlign . 'Class'; // leftClass, rightClass
+				if (!empty($tx->figureModule->$var)) {
+					$class = $tx->figureModule->$var;
+
+				} elseif (empty($tx->alignClasses[$hAlign])) {
+					$el->attrs['style']['float'] = $hAlign;
+
+				} else {
+					$class .= '-' . $tx->alignClasses[$hAlign];
+				}
+			}
+			$el->attrs['class'][] = $class;
+
+			return $el;
 		}
 
 
