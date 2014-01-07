@@ -160,6 +160,26 @@
 					return (string)$this->template->$var;
 				}
 			}
+			elseif($cmd[0] === '$') {
+				$pos = strpos($cmd, ':');
+
+				if ($pos === FALSE) {
+					$pos = strpos($cmd, '=');
+				}
+
+				if ($pos !== FALSE) {
+					$var = trim(substr($cmd, 1, $pos - 1));
+					$value = trim(substr($cmd, $pos + 1));
+
+					if ($var !== '') {
+						$this->template->$var = $value;
+						return '';
+					}
+				} else {
+					$var = trim(substr($cmd, 1));
+					return (string) $this->template->$var;
+				}
+			}
 
 			return $invocation->proceed();
 		}
