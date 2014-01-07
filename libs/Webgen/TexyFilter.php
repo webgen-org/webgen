@@ -35,6 +35,12 @@
 
 		protected function transformToLatte($html)
 		{
+			// Disable latte macros
+			$html = strtr($html, array(
+				'{' => '{l}',
+				'}' => '{r}',
+			));
+
 			// Add #title
 			$source = '{block #title}'
 				. $this->headingModule->title
