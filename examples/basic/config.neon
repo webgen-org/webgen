@@ -14,7 +14,7 @@ input:
 output:
 	dir: output  # output directory
 	ext: html    # output files extension
-	xhtml: on    # enables or disables XHTML output
+	xhtml: no    # enables or disables XHTML output
 	purge: off   # purge output directory before generating?
 	onedir: no
 

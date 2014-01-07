@@ -59,7 +59,7 @@ Parameters:
 			'output' => array(
 				'dir' => 'output',	// name of output directory
 				'ext' => 'html',	// output file extension
-				'xhtml' => TRUE,	// enables or disables XHTML output
+				'xhtml' => FALSE,	// enables or disables XHTML output
 				'purge' => FALSE,   // purge output directory?
 				'onedir' => FALSE,
 			),
