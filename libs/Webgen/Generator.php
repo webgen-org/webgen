@@ -289,6 +289,10 @@
 			// own macros
 			$set = new Nette\Latte\Macros\MacroSet($latte->compiler);
 			$set->addMacro('webgen', '$webgen->addCurrentFileConfig(%node.array)');
+			$macroLink = 'echo %escape(%modify($webgen->createRelativeLink(%node.word)))';
+			$set->addMacro('link', $macroLink);
+			$set->addMacro('href', NULL, NULL, ' ?> href="<?php ' . $macroLink . ' ?>"<?php ');
+
 			return $template->registerFilter($latte);
 		}
 
