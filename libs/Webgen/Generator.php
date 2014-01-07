@@ -6,6 +6,7 @@
 	 */
 
 	namespace Webgen;
+	use Nette;
 
 	class Generator extends \Nette\Object
 	{
@@ -29,6 +30,9 @@
 
 		/** @var  string|NULL */
 		private $currentFile;
+
+		/** @var  array */
+		private $currentFileConfig;
 
 
 
@@ -61,8 +65,22 @@
 
 
 
+		public function addCurrentFileConfig(array $config)
+		{
+			if (isset($config['ext'])) {
+				if (!is_string($config['ext']) && !is_numeric($config['ext'])) {
+					throw new WebgenException('Output file extension must be string.');
+				}
+
+				$this->currentFileConfig['ext'] = (string) $config['ext'];
+			}
+		}
+
+
+
 		public function generate($filePath, \SplFileInfo $fileInfo, Webgen $webgenHelper)
 		{
+			$this->currentFileConfig = $this->config['output'];
 			$this->template = $template = $this->createTemplate();
 			$texy = new \Webgen\Texy($this->config['variables']['baseDir']);
 
@@ -115,12 +133,6 @@
 			$filters[] = callback($this, 'templateMagicFilter');
 
 			// Render to file
-			$fileName = $this->formatOutputFilePath($filePath, $fileInfo);
-
-			// -- Create subdirectory
-			$this->makeDir(dirname($fileName));
-
-			// -- Apply filters
 			$content = $template->getSource();
 
 			foreach($filters as $filter)
@@ -130,8 +142,9 @@
 
 			$template->setSource($content);
 
-			// -- Save to file
-			$template->save($fileName);
+			$content = $template->__toString(TRUE); // render to var
+			$fileName = $this->formatOutputFilePath($filePath, $fileInfo); // format output filepath
+			$this->saveFile($fileName, $content); // save into file
 		}
 
 
@@ -180,20 +193,45 @@
 					return (string) $this->template->$var;
 				}
 			}
+			elseif($cmd === 'webgen')
+			{
+				$config = array();
+
+				foreach ($args as $arg) {
+					$pos = strpos($arg, ':');
+
+					if ($pos !== FALSE) {
+						$name = trim(substr($arg, 0, $pos));
+						$value = trim(substr($arg, $pos + 1));
+						$config[$name] = $value;
+					}
+				}
+
+				$this->addCurrentFileConfig($config);
+				return '';
+			}
 
 			return $invocation->proceed();
 		}
 
 
 
-		protected function makeDir($directory)
+		protected function makeDir($dir)
 		{
-			if(is_dir($directory))
-			{
-				return true;
+			if (!is_dir($dir) && !@mkdir($dir, 0777, TRUE)) { // intentionally @; not atomic
+				throw new Nette\IOException("Unable to create directory '$dir'.");
 			}
+		}
 
-			return mkdir($directory, 0777, true);
+
+
+		protected function saveFile($file, $content)
+		{
+			$this->makeDir(dirname($file));
+
+			if (file_put_contents($file, $content) === FALSE) {
+				throw new Nette\IOException("Unable to save file '$file'.");
+			}
 		}
 
 
@@ -248,6 +286,9 @@
 
 			\Nette\Utils\Html::$xhtml = $xhtml;
 
+			// own macros
+			$set = new Nette\Latte\Macros\MacroSet($latte->compiler);
+			$set->addMacro('webgen', '$webgen->addCurrentFileConfig(%node.array)');
 			return $template->registerFilter($latte);
 		}
 
@@ -269,7 +310,7 @@
 			$name .= dirname(substr($filePath, strlen($this->inputDirectory)));
 			$name .= '/' . $fileInfo->getBasename($fileInfo->getExtension());
 
-			return $name . $this->config['output']['ext'];
+			return $name . $this->currentFileConfig['ext'];
 		}
 
 

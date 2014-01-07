@@ -24,6 +24,12 @@
 		}
 
 
+		public function addCurrentFileConfig(array $config)
+		{
+			$this->generator->addCurrentFileConfig($config);
+		}
+
+
 		/**
 		 * @param  string
 		 * @return bool
