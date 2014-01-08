@@ -522,7 +522,7 @@
 
 				// detect dimensions
 				// absolute URL & security check for double dot
-				if (Texy::isRelative($image->URL)) {
+				if (\Texy::isRelative($image->URL)) {
 					$file = rtrim($this->outputFileDirectory, '/\\') . '/' . rtrim(dirname($this->currentFile), '/\\') . '/' . $image->URL;
 					if (@is_file($file)) { // intentionally @
 						$size = @getImageSize($file); // intentionally @
