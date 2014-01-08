@@ -32,6 +32,7 @@
 
 		/**
 		 * @param  string
+		 * @throws WebgenException
 		 * @return bool
 		 */
 		public function isLinkCurrent($page)
