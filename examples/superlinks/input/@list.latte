@@ -9,7 +9,7 @@
 
 <ul n:if="!$printAnchors">
 	<li n:foreach="$pages as $page => $title" n:if="!$webgen::isPathCurrent($page, 'index.html')"> {* skips index.html *}
-		<a href="{$webgen->createRelativeLink($page)}">{$title}</a>
+		<a n:href="$page">{$title}</a>
 	</li>
 </ul>
 
@@ -18,7 +18,7 @@
 		{if $webgen->isLinkCurrent(str_replace('.html', '.*', $page))}
 			<strong>{$title}</strong>
 		{else}
-			<a href="{$webgen->createRelativeLink($page)}">{$title}</a>
+			<a n:href="$page">{$title}</a>
 		{/if}
 		{sep}|{/sep} {* separator *}
 	{/foreach}
