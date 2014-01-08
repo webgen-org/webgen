@@ -1,0 +1,11 @@
+#
+# Visit http://ne-on.org/ for syntax details.
+#
+
+input:
+	copy: yes
+
+output:
+	onedir: yes
+	purge: yes
+
