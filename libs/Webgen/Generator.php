@@ -61,6 +61,41 @@
 
 
 
+		public function finish()
+		{
+			if (isset($this->config['input']['copy']) && $this->config['input']['copy']) {
+				$mask = $this->config['input']['copy'];
+				if ($mask === TRUE) {
+					$mask = NULL;
+				}
+
+				\Cli\Cli::log("\nCopy into output directory:");
+
+				foreach (Finder::find($mask)->exclude('*.latte', '*.texy')->from($this->inputDirectory) as $file) {
+					$dest = $this->outputFileDirectory . '/' . $this->shortPath((string) $file, $this->inputDirectory);
+
+					if (!$file->isReadable()) {
+						\Cli\Cli::log("[skipped] $file");
+						continue;
+					} elseif ($file->isDir()) {
+						$this->makeDir($dest);
+					} elseif ($file->isFile()) {
+						$this->makeDir(dirname($dest));
+						if (@stream_copy_to_stream(fopen($file, 'r'), fopen($dest, 'w')) === FALSE) {
+							\Cli\Cli::log("[error]   $file");
+							continue;
+						}
+					}
+
+					\Cli\Cli::log($file);
+				}
+
+				\Cli\Cli::log('');
+			}
+		}
+
+
+
 		public function getCurrentFile()
 		{
 			return $this->currentFile;

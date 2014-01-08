@@ -9,6 +9,7 @@
 input:
 	layout: '@layout.latte'  # template with layout
 	dir: input   # directory with source files
+	copy: off
 
 
 output:

@@ -54,6 +54,7 @@ Parameters:
 			'input' => array(
 				'layout' => '@layout.latte',	// name of layout file
 				'dir' => 'input', // name of input directory
+				'copy' => FALSE, // copy another (images, JS, CSS) files into output directory
 			),
 
 			'output' => array(
@@ -191,6 +192,8 @@ Parameters:
 			\Cli\Cli::log($filePath);
 			$generator->generate($filePath, $fileInfo, $webgenHelper);
 		}
+
+		$generator->finish();
 
 		// Save datetime of build
 		\Cli\Cli::log("Saving last build infos...");
