@@ -31,11 +31,11 @@
 
 
 		/**
-		 * @param  string
+		 * @param  string|string[]
 		 * @throws WebgenException
 		 * @return bool
 		 */
-		public function isLinkCurrent($page)
+		public function isLinkCurrent($pages/*, ...*/)
 		{
 			$currentFile = $this->getCurrentFile();
 
@@ -43,7 +43,16 @@
 				throw new WebgenException('nezpracovava se zadny soubor');
 			}
 
-			return self::isPathCurrent($currentFile, $page);
+			if (!is_array($pages)) {
+				$pages = func_get_args();
+			}
+
+			foreach ($pages as $page) {
+				if (self::isPathCurrent($currentFile, $page)) {
+					return TRUE;
+				}
+			}
+			return FALSE;
 		}
 
 
