@@ -446,8 +446,30 @@
 			$macroLink = 'echo %escape(%modify($webgen->createRelativeLink(%node.word)))';
 			$set->addMacro('link', $macroLink);
 			$set->addMacro('href', NULL, NULL, ' ?> href="<?php ' . $macroLink . ' ?>"<?php ');
+			$set->addMacro('src', NULL, NULL, ' ?> src="<?php ' . $macroLink . ' ?>"<?php ');
+			$set->addMacro('image', NULL, NULL, callback($this, 'latteImageMacro'));
 
 			return $template->registerFilter($latte);
+		}
+
+
+
+		public function latteImageMacro($node, $writer) {
+			$word = $writer->write('%node.word');
+			$url = substr($word, 1, -1);
+			$attrs = NULL;
+			if (\Texy::isRelative($url)) {
+				$url = Webgen::makeRelativePath($this->currentFile, $url);
+				$file = rtrim($this->outputFileDirectory, '/\\') . '/' . rtrim(dirname($this->currentFile), '/\\') . '/' . $url;
+				if (@is_file($file)) { // intentionally @
+					$size = @getImageSize($file); // intentionally @
+					if (is_array($size)) {
+						$attrs = ' width="' . ((int) $size[0]) . '"';
+						$attrs .= ' height="' . ((int) $size[1]) . '"';
+					}
+				}
+			}
+			return $writer->write(' ?> src="<?php echo %escape(%modify($webgen->createRelativeLink(' . $word . '))) ?>"' . $attrs . '<?php ');
 		}
 
 
