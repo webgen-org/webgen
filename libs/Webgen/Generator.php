@@ -57,11 +57,13 @@
 			} else {
 				$this->makeDir($this->outputFileDirectory);
 			}
+
+			$this->processCopy();
 		}
 
 
 
-		public function finish()
+		private function processCopy()
 		{
 			if (isset($this->config['input']['copy']) && $this->config['input']['copy']) {
 				$mask = $this->config['input']['copy'];
@@ -69,7 +71,7 @@
 					$mask = NULL;
 				}
 
-				\Cli\Cli::log("\nCopy into output directory:");
+				\Cli\Cli::log("Copy into output directory:");
 
 				foreach (Finder::find($mask)->exclude('*.latte', '*.texy')->from($this->inputDirectory) as $file) {
 					$dest = $this->outputFileDirectory . '/' . $this->shortPath((string) $file, $this->inputDirectory);

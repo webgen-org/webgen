@@ -193,8 +193,6 @@ Parameters:
 			$generator->generate($filePath, $fileInfo, $webgenHelper);
 		}
 
-		$generator->finish();
-
 		// Save datetime of build
 		\Cli\Cli::log("Saving last build infos...");
 		\WebGen\Generator::setLastBuildDate($dir . '/lastBuild.dat', new DateTime);
