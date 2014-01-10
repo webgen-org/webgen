@@ -388,7 +388,7 @@
 		{
 			@mkdir($directory, 0777, TRUE); // @ - directory may already exist
 
-			\Cli\Cli::log("Purge: \n$directory");
+			\Cli\Cli::log("Purge:\n$directory");
 			foreach (Finder::find($mask)->from($directory)->childFirst() as $entry) {
 				$res = TRUE;
 				if (substr($entry->getBasename(), 0, 1) === '.') { // . or .. or .gitignore (hidden files)
