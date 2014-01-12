@@ -112,7 +112,12 @@
 					$destinationCount = 0;
 				} elseif ($destinationCount === 0) {
 					end($source);
-					$destination = array(prev($source));
+					$k = $sourceCount - $destinationCount;
+					while ($k) {
+						$part = prev($source);
+						$k--;
+					}
+					$destination = array($part);
 					$padLeft++;
 				}
 
