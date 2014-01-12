@@ -85,35 +85,42 @@
 
 			$source = explode('/', $source);
 			$sourceCount = count($source);
-			$relativePath = $destination = explode('/', $destination);
-			$relativePathCount = count($relativePath);
+			$destination = explode('/', $destination);
 
+			// remove first same parts
+			$iter = 0;
 			foreach ($source as $index => $part) {
-				// remove first same parts
-				if (isset($destination[$index]) && $destination[$index] === $part) {
-					// ignore this part
-					array_shift($relativePath);
-					$relativePathCount--;
-				} else {
-					$remaining = $sourceCount - $index;
-					if ($remaining > 1) {
-						// add traversals up to first matching dir
-						$padLength = ($relativePathCount + $remaining - 1) * -1;
-						$relativePath = array_pad($relativePath, $padLength, '..');
-						break;
-					} else {
-						$relativePath[0] = /*'./' . */$relativePath[0];
-					}
+				if (isset($destination[$index - $iter]) && $destination[$index - $iter] === $source[$index]) {
+					array_shift($destination);
+					$sourceCount--;
+					$iter++;
+					continue;
 				}
+				break;
 			}
 
-			$relativePath = implode('/', $relativePath);
+			$destinationCount = count($destination);
+			$padLeft = $sourceCount - 1;
 
-			if (!$relativePathCount || $relativePath === '') {
-				return '.';
+			if ($padLeft < 0) {
+				array_unshift($destination, end($source));
+			} else {
+				$padLeft += (!$destinationCount) ? 1 : 0;
+
+				if ($destinationCount === 1 && $destination[0] === '') { // remove empty '' (prevents '../', gets '..')
+					$destination = array();
+					$destinationCount = 0;
+				} elseif ($destinationCount === 0) {
+					end($source);
+					$destination = array(prev($source));
+					$padLeft++;
+				}
+
+				$destination = array_pad($destination, ($destinationCount + $padLeft) * -1, '..');
 			}
 
-			return $relativePath;
+			$destination = implode('/', $destination);
+			return $destination !== '' ? $destination : '.';
 		}
 
 
