@@ -47,7 +47,7 @@
 				. "{/block}\n";
 
 			// Add #content
-			$source .= '{block #content}' . $html;
+			$source .= "{block #content}\n" . $html;
 
 			return $source;
 		}
