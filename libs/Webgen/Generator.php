@@ -37,6 +37,16 @@
 		/** @var  TexyFilter */
 		private $currentTexy;
 
+		/** @var  \Nette\Caching\IStorage */
+		private $cacheStorage;
+
+
+
+		public function __construct()
+		{
+			$this->cacheStorage = new \Nette\Caching\Storages\MemoryStorage;
+		}
+
 
 
 		public function prepare($versioned, $purge = FALSE)
@@ -415,7 +425,7 @@
 		protected function createTemplate()
 		{
 			$template = new FileTemplate;
-			$template->setCacheStorage(new \Nette\Caching\Storages\MemoryStorage);
+			$template->setCacheStorage($this->cacheStorage);
 
 			// Register Latte
 			$template = $this->templateRegisterLatte($template);
