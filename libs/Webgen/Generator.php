@@ -133,6 +133,8 @@
 			$this->currentFileConfig = $this->config['output'];
 			$this->template = $template = $this->createTemplate();
 			$texy = new \Webgen\Texy($this->config['variables']['baseDir']);
+			$texy->headingModule->top = 2;
+			$this->configureTexy($texy);
 
 			$titleBlock = '';
 			$filters = array();
@@ -150,10 +152,7 @@
 			{
 				$texyFilter = new TexyFilter($this->config['variables']['baseDir']);
 				$texyFilter->addHandler('script', callback($this, 'scriptHandler'));
-				$texyFilter->addHandler('phrase', callback($this, 'phraseHandler'));
-				$texyFilter->addHandler('linkReference', callback($this, 'linkReferenceHandler'));
-				$texyFilter->addHandler('figure', callback($this, 'figureHandler'));
-				$texyFilter->addHandler('image', callback($this, 'imageHandler'));
+				$this->configureTexy($texyFilter);
 
 				$filters[] = $texyFilter;
 				$this->currentTexy = $texyFilter;
@@ -639,6 +638,16 @@
 			$el->attrs['class'][] = $class;
 
 			return $el;
+		}
+
+
+
+		private function configureTexy($texy)
+		{
+			$texy->addHandler('phrase', callback($this, 'phraseHandler'));
+			$texy->addHandler('linkReference', callback($this, 'linkReferenceHandler'));
+			$texy->addHandler('figure', callback($this, 'figureHandler'));
+			$texy->addHandler('image', callback($this, 'imageHandler'));
 		}
 
 
