@@ -165,6 +165,10 @@ Who uses Webgen?
 * http://janpecha.iunas.cz/
 * http://via.iunas.cz/
 
+Articles:
+* http://janpecha.blogista.cz/webgen-2-1 (in Czech)
+* http://janpecha.blogista.cz/webgen (in Czech)
+
 
 ------------------------------
 
