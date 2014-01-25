@@ -40,11 +40,15 @@
 		/** @var  \Nette\Caching\IStorage */
 		private $cacheStorage;
 
+		/** @var  \Webgen\FakePresenter @internal */
+		private $presenter;
+
 
 
 		public function __construct()
 		{
 			$this->cacheStorage = new \Nette\Caching\Storages\MemoryStorage;
+			$this->presenter = new \Webgen\FakePresenter($this);
 		}
 
 
@@ -141,6 +145,7 @@
 
 			$template->setFile($filePath);
 			$template->webgen = $webgenHelper;
+			$template->_presenter = $template->_control = $this->presenter;
 
 			// set current file
 			$this->currentFile = $this->shortPath($filePath, $this->inputDirectory);
@@ -182,9 +187,6 @@
 
 			// Register Texy! Helper
 			$template->registerHelper('texy', array($texy, 'process'));
-
-			// Register MagicFilter (code modification for Latte, for example add layout macro,...) TODO: better name?
-			$filters[] = callback($this, 'templateMagicFilter');
 
 			// Render to file
 			$content = $template->getSource();
@@ -481,14 +483,6 @@
 			return $writer->write(' ?> src="<?php echo %escape(%modify($webgen->createRelativeLink(' . $word . '))) ?>"' . $attrs . '<?php ');
 		}
 
-
-
-		public function templateMagicFilter($s)
-		{
-			$content = "{layout '{$this->layoutPath}'}\n" . $s;
-
-			return $content;
-		}
 
 
 		protected function formatOutputFilePath($filePath, \SplFileInfo $fileInfo)

@@ -7,6 +7,7 @@
 
 	require __DIR__ . '/libs/Nette/nette.min.php';
 	require __DIR__ . '/libs/Texy/texy.min.php';
+	require __DIR__ . '/libs/Webgen/FakePresenter.php';
 	require __DIR__ . '/libs/Webgen/Generator.php';
 	require __DIR__ . '/libs/Webgen/Texy.php';
 	require __DIR__ . '/libs/Webgen/TexyFilter.php';
