@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<!-- <link rel="stylesheet" media="screen,projection,tv" href="{$baseDir}/css/screen.css" type="text/css"> -->
+	<style type="text/css">
+	body {
+		font-family: Arial, sans-serif;
+		font-size: 90%;
+		line-height: 1.6em;
+		margin: 0;
+		padding: 0;
+		border-top: 8px solid #2A4C2A;
+		background: #f8f8f8;
+	}
+
+	#wrapper {
+		max-width: 1024px;
+		margin: 1em auto;
+		padding: 1em;
+		border: 1px solid silver;
+		border-radius: 0.5em;
+		background: #fff;
+		overflow: hidden;
+		position: relative;
+	}
+
+	h1 {
+		color: #444;
+	}
+
+	hr {
+		border-width: 0;
+		border-top: 1px solid #444;
+	}
+
+	#sidemenu a {
+		display: block;
+	}
+
+	#sidemenu h2 {
+		margin-top: 0;
+	}
+
+	#sidemenu {
+		width: 20%;
+		padding: 1em;
+		background: #eee;
+		border-radius: 0.5em;
+		position: absolute;
+		top: 5em;
+		right: 1em;
+	}
+
+	#content {
+		width: 60%;
+	}
+
+	#footer {
+		clear: both;
+	}
+
+	a:link {
+		color: #0044aa;
+	}
+
+	a:visited {
+		color: #00255c;
+	}
+
+	a:hover {
+		color: #d22;
+	}
+	</style>
+
+	<title>{ifset #title}{include #title |striptags|strip|trim} :: {/ifset} My Example Page</title>
+	<!-- OR <title>{block #title}{/block} :: My Example Page -->
+</head>
+<body>
+	<div id="wrapper">
+		<a n:href="/" n:if="!isset($hideHpLink)">Back To Homepage</a> | <small>This is next layout template</small>
+
+		<div id="content">
+			{include #content}
+		</div>
+
+		<div id="sidemenu">
+			<h2>Content</h2>
+			<a n:href="articles/article-1.html">Article #1</a>
+			<a n:href="articles/article-2.html">Article #2</a>
+			<a n:href="articles/article-3.html">Article #3</a>
+		</div>
+
+		<div id="footer">
+			<hr>
+			Author: <a href="http://janpecha.iunas.cz/">Jan Pecha</a>, 2012
+		</div>
+	</div>
+</body>
+</html>

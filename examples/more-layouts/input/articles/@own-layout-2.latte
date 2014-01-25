@@ -1,0 +1,12 @@
+{extends auto} {* means "main layout template"... *}
+{* ...or use {extends ../../@layout.latte} *}
+
+{block #content}
+<div>
+<b>Next file with own layout template.</b>
+</div>
+
+<div style="border: 1px solid silver;border-width: 0 1px;margin: 1em 8em;padding: 2em">
+	{block #inner-content}{/block}
+</div>
+
