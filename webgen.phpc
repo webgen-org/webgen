@@ -75,11 +75,15 @@ Parameters:
 
 		// Load NEON config
 		\Cli\Cli::log('Load config...');
-		$config = file_get_contents($configPath);
+		$config = @file_get_contents($configPath); // intentionally @
 
 		if(is_string($config))
 		{
 			$config = \Nette\Utils\Neon::decode($config);
+		}
+		else
+		{
+			\Cli\Cli::log('...config file not found.');
 		}
 
 		if(is_array($config))
