@@ -64,6 +64,7 @@ Parameters:
 				'xhtml' => FALSE,	// enables or disables XHTML output
 				'purge' => FALSE,   // purge output directory?
 				'onedir' => FALSE,
+				'lastBuildInfo' => TRUE, // generate last build info file?
 			),
 
 			'variables' => array(
@@ -195,8 +196,11 @@ Parameters:
 		}
 
 		// Save datetime of build
-		\Cli\Cli::log("Saving last build infos...");
-		\WebGen\Generator::setLastBuildDate($dir . '/lastBuild.dat', new DateTime);
+		if ($config['output']['lastBuildInfo'])
+		{
+			\Cli\Cli::log("Saving last build infos...");
+			\WebGen\Generator::setLastBuildDate($dir . '/lastBuild.dat', new DateTime);
+		}
 
 
 		\Cli\Cli::log("Done.\n");
