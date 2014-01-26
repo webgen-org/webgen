@@ -31,8 +31,8 @@
 		if($params === FALSE || !isset($params['run']))
 		{
 ?>
-Webgen 2.0.2
-------------
+Webgen 2.1.0-dev
+----------------
 Usage:
 	php -f webgen.phpc -- --run
 
