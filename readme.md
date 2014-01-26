@@ -80,6 +80,94 @@ output:
     onedir: yes
 ```
 
+------------------------------
+
+***Note:*** *Webgen ignores files with ```@``` on start of filename.*
+
+
+Templating
+----------
+
+**Texy in Latte template**
+
+```smarty
+{block |texy}
+This is **Texy** snippet.
+{/block}
+
+
+{texy}
+This is "Texy":http://texy.info snippet too.
+{/texy}
+```
+
+**Get name of current generated file**
+
+```smarty
+{$webgen->currentFile} {* prints for example: 'articles/article-2.texy' *}
+```
+
+**Get relative path from ```currentFile``` to a file**
+
+```smarty
+{$webgen->createRelativeLink('articles/article-1.html')}
+{* prints:
+'article-1.html'          for currentFile = 'articles/article-2.texy'
+'articles/article-1.html' for currentFile = 'index.texy'
+*}
+```
+Shortcuts (output for ```currentFile = 'articles/article-2.texy'```)
+
+```html
+{link articles/article-1.html} {* prints article-1.html *}
+
+<a n:href="articles/article-1.html">Article #1</a>
+{* prints *}
+<a href="article-1.html">Article #1</a>
+
+
+<link rel="stylesheet" n:href="css/style.css" type="text/css">
+{* prints *}
+<link rel="stylesheet" href="../css/style.css" type="text/css">
+
+
+<img n:src="images/photo.jpg">
+{* prints *}
+<img src="../images/photo.jpg">
+
+<img n:image="images/photo.jpg">
+{* prints (image file must exist) *}
+<img src="../images/photo.jpg" width="1024" height="768">
+```
+
+Relative paths in Texy:
+
+```
+"Article #1":@articles/article-1.html
+
+[* @images/photo.jpg *]
+```
+
+**Highlight current page in menu** *(is link current?)*
+```html
+<div id="menu">
+    <a n:href="/" n:class="$webgen->isLinkCurrent('index.texy') ? current">Homepage</a>
+    <a n:href="about-us/" n:class="$webgen->isLinkCurrent('about-us/**') ? current">About us</a>
+    <a n:href="contact.html" n:class="$webgen->isLinkCurrent('contact.*') ? current">Contact</a>
+</div>
+```
+
+In mask ```**``` means *everything*, ```*``` means *everything <b>except</b> ```/```*.
+
+**Variables in Texy document**
+```
+{{$var}}
+
+{{$var = value}}
+
+{{$var: value}}
+```
+
 
 Configuration
 -------------
@@ -151,9 +239,16 @@ output:
 
 File-specific change:
 
-```
+```smarty
 {webgen ext => php}   ## in Latte template
 {{webgen: ext: php}}  ## in Texy file
+```
+
+**Disable generating of ```lastBuild.dat``` file**
+
+```
+output:
+    lastBuildInfo: off
 ```
 
 
