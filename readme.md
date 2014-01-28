@@ -244,12 +244,31 @@ File-specific change:
 {{webgen: ext: php}}  ## in Texy file
 ```
 
+**Change output filename**
+
+```smarty
+## changes output file extension
+{webgen ext => php}
+
+## changes output basename of file
+{webgen name => my-first-page}
+
+## changes output filename (ignores 'ext' option)
+{webgen filename => my-first-page.html}
+```
+
 **Disable generating of ```lastBuild.dat``` file**
 
 ```
 output:
     lastBuildInfo: off
 ```
+
+
+Pagination
+----------
+
+See example [pagination-repeated-generating](examples/pagination-repeated-generating).
 
 
 Who uses Webgen?
