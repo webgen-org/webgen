@@ -140,7 +140,6 @@
 			$texy->headingModule->top = 2;
 			$this->configureTexy($texy);
 
-			$titleBlock = '';
 			$filters = array();
 
 			$template->setFile($filePath);
