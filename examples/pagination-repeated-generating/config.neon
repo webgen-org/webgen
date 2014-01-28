@@ -1,0 +1,12 @@
+#
+# Visit http://ne-on.org/ for syntax details.
+#
+
+input:
+	copy: *.css
+
+output:
+	purge: yes
+	onedir: yes
+	lastBuildInfo: off
+

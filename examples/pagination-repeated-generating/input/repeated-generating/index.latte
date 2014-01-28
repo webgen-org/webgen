@@ -1,0 +1,17 @@
+{var $pageCount = 5}
+{webgen repeatGenerating => $webgen->currentIteration < $pageCount}
+
+{block content}
+	<h1 n:block="title">Page #{$webgen->currentIteration}</h1>
+	<p>Lorem ipsum dolor sit amet</p>
+
+	<ul>
+		<li n:for="$i = 0; $i < $pageCount; $i++">
+			{var $page = ''}
+			{if $i > 0}
+				{var $page = '.' . ($i+1)}
+			{/if}
+			<a n:href="repeated-generating/index$page.html">Page #{$i+1}</a>
+		</li>
+	</ul>
+

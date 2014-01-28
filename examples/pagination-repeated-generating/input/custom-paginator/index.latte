@@ -1,0 +1,40 @@
+{if $webgen->currentIteration > 1}
+	{webgen name => 'page-' . $webgen->currentIteration}
+{/if}
+
+{block head}
+<link rel="stylesheet" n:href="custom-paginator/paginator.css" type="text/css">
+{/block}
+
+{block content}
+	<h1 n:block="title">Custom paginator - Page #{$webgen->currentIteration}</h1>
+	<p>Lorem ipsum dolor sit amet</p>
+
+	{var $items = [
+		'Item #1',
+		'Item #2',
+		'Item #3',
+		'Item #4',
+		'Item #5',
+		'Item #6',
+		'Item #7',
+		'Item #8',
+		'Item #9',
+	]}
+
+	{* Paginator helper *}
+	{var $paginator = new Nette\Utils\Paginator}
+	{? $paginator->setItemCount(count($items))}
+	{? $paginator->setItemsPerPage(2)}
+	{? $paginator->setPage($webgen->currentIteration)}
+
+	{webgen repeatGenerating => !$paginator->isLast()}
+
+	{* draw items *}
+	<ul>
+		<li n:foreach="array_slice($items, $paginator->offset, $paginator->itemsPerPage) as $item">{$item}</li>
+	</ul>
+
+	{* draw paginator *}
+	{include @paginator.latte, paginator => $paginator}
+

@@ -1,0 +1,23 @@
+{var $pageCount = 5}
+{webgen repeatGenerating => $webgen->currentIteration < $pageCount}
+
+{block content}
+	<h1 n:block="title">Simple pagination - Page #{$webgen->currentIteration}</h1>
+	<p>Lorem ipsum dolor sit amet</p>
+
+	{var $pageUrl = 'simple-pagination/index.'}
+
+	{if $webgen->currentIteration > 1}
+		{var $prevPage = $pageUrl}
+		{if $webgen->currentIteration > 2}
+			{var $prevPage .= ($webgen->currentIteration - 1) . '.'}
+		{/if}
+		{var $prevPage .= 'html'}
+		<a n:href="$prevPage">Previous</a>
+	{/if}
+
+	{if $webgen->currentIteration < $pageCount}
+		{var $nextPage = $pageUrl}
+		{var $nextPage .= ($webgen->currentIteration + 1) . '.html'}
+		<a n:href="$nextPage">Next</a>
+	{/if}

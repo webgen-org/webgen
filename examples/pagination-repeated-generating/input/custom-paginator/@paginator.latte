@@ -1,0 +1,62 @@
+{*
+ * @param Paginator $paginator
+ * @author David Grudl, http://davidgrudl.com/
+ *}
+
+{* magic math :) *}
+{var $page = $paginator->page}
+{if $paginator->pageCount < 2}
+	{var $steps = array($page)}
+{else}
+	{var $arr = range(max($paginator->firstPage, $page - 3), min($paginator->lastPage, $page + 3))}
+	{var $count = 4}
+	{var $quotient = ($paginator->pageCount - 1) / $count}
+	{for $i = 0; $i <= $count; $i++}
+		{var $arr[] = round($quotient * $i) + $paginator->firstPage}
+	{/for}
+	{? sort($arr)}
+	{var $steps = array_values(array_unique($arr))}
+{/if}
+
+{* draw paginator *}
+{if $paginator->pageCount > 1}
+<div class="paginator">
+	{var $root = 'custom-paginator'}
+	{if $paginator->isFirst()}
+	<span class="button">« Previous</span>
+	{else}
+		{var $page = $paginator->page - 1}
+		{if $page === 1}
+			{var $page = 'index'}
+		{else}
+			{var $page = "page-$page"}
+		{/if}
+		{var $page = "$root/$page.html"}
+		<a n:href="$page">« Previous</a>
+	{/if}
+
+	{foreach $steps as $step}
+	{if $step == $paginator->page}
+		<span class="current">{$step}</span>
+	{else}
+		{if $step == 1}
+			{var $page = 'index'}
+		{else}
+			{var $page = "page-$step"}
+		{/if}
+		{var $page = "$root/$page.html"}
+		<a n:href="$page">{$step}</a>
+	{/if}
+	{if $iterator->nextValue > $step + 1}<span>…</span>{/if}
+	{/foreach}
+
+	{if $paginator->isLast()}
+	<span class="button">Next »</span>
+	{else}
+		{var $page = $paginator->page + 1}
+		{var $page = "$root/page-$page.html"}
+		<a n:href="$page">Next »</a>
+	{/if}
+</div>
+{/if}
+
