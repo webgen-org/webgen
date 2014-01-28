@@ -34,6 +34,12 @@
 		/** @var  array */
 		private $currentFileConfig;
 
+		/** @var  int */
+		private $currentIteration;
+
+		/** @var  bool */
+		private $repeatGenerating;
+
 		/** @var  TexyFilter */
 		private $currentTexy;
 
@@ -119,6 +125,13 @@
 
 
 
+		public function getCurrentIteration()
+		{
+			return $this->currentIteration;
+		}
+
+
+
 		public function addCurrentFileConfig(array $config)
 		{
 			if (isset($config['ext'])) {
@@ -128,6 +141,32 @@
 
 				$this->currentFileConfig['ext'] = (string) $config['ext'];
 			}
+
+			if (isset($config['repeatGenerating'])) {
+				$this->repeatGenerating = (bool) $config['repeatGenerating'];
+			}
+
+			if (array_key_exists('filename', $config)) {
+				if ($config['filename'] === NULL) {
+					$this->currentFileConfig['filename'] = NULL;
+				} else {
+					if (!is_string($config['filename']) && !is_numeric($config['filename'])) {
+						throw new WebgenException('Output filename must be string.');
+					}
+					$this->currentFileConfig['filename'] = (string) $config['filename'];
+				}
+			}
+
+			if (array_key_exists('name', $config)) {
+				if ($config['name'] === NULL) {
+					$this->currentFileConfig['name'] = NULL;
+				} else {
+					if (!is_string($config['name']) && !is_numeric($config['name'])) {
+						throw new WebgenException('Output filename must be string.');
+					}
+					$this->currentFileConfig['name'] = (string) $config['name'];
+				}
+			}
 		}
 
 
@@ -135,6 +174,9 @@
 		public function generate($filePath, \SplFileInfo $fileInfo, Webgen $webgenHelper)
 		{
 			$this->currentFileConfig = $this->config['output'];
+			$this->currentFileConfig['filename'] = NULL;
+			$this->currentFileConfig['name'] = NULL;
+			$this->currentIteration = 1;
 			$this->template = $template = $this->createTemplate();
 			$texy = new \Webgen\Texy($this->config['variables']['baseDir']);
 			$texy->headingModule->top = 2;
@@ -195,11 +237,17 @@
 				$content = $filter($content);
 			}
 
-			$template->setSource($content);
+			#$template->setSource($content);
+			$this->repeatGenerating = FALSE;
 
-			$content = $template->__toString(TRUE); // render to var
-			$fileName = $this->formatOutputFilePath($filePath, $fileInfo); // format output filepath
-			$this->saveFile($fileName, $content); // save into file
+			do {
+				$tpl = clone $template;
+				$tpl->setSource($content);
+				$content = $tpl->__toString(TRUE); // render to var
+				$fileName = $this->formatOutputFilePath($filePath, $fileInfo); // format output filepath
+				$this->saveFile($fileName, $content); // save into file
+				$this->currentIteration++;
+			} while ($this->repeatGenerating);
 		}
 
 
@@ -487,9 +535,18 @@
 		protected function formatOutputFilePath($filePath, \SplFileInfo $fileInfo)
 		{
 			$name = $this->outputFileDirectory;
+			$name .= dirname(substr($filePath, strlen($this->inputDirectory))) . '/';
 
-			$name .= dirname(substr($filePath, strlen($this->inputDirectory)));
-			$name .= '/' . $fileInfo->getBasename($fileInfo->getExtension());
+			if ($this->currentFileConfig['filename'] !== NULL) {
+				return $name . $this->currentFileConfig['filename'];
+			}
+
+			if ($this->currentFileConfig['name'] !== NULL) {
+				$name .= $this->currentFileConfig['name'] . '.';
+			} else {
+				$name .= $fileInfo->getBasename($fileInfo->getExtension())
+					. ($this->currentIteration > 1 ? "{$this->currentIteration}." : '');
+			}
 
 			return $name . $this->currentFileConfig['ext'];
 		}

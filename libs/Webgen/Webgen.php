@@ -24,6 +24,12 @@
 		}
 
 
+		public function getCurrentIteration()
+		{
+			return $this->generator->getCurrentIteration();
+		}
+
+
 		public function addCurrentFileConfig(array $config)
 		{
 			$this->generator->addCurrentFileConfig($config);
