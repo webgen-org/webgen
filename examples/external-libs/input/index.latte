@@ -1,0 +1,27 @@
+
+{block #content}
+<h1 n:block="title">WebGen 2.1 - Example - External libs</h1>
+
+<p>External libs: {MyExternalLibrary::hello()}</p>
+
+<p>External items:</p>
+<ul>
+	<li n:foreach="MyExternalLibrary::getItems() as $item">{$item}</li>
+</ul>
+
+<p>Function (see <code>libs/autoload.php</code>): {sayHello()}</p>
+
+<p>You can use <a href="http://getcomposer.org">Composer</a> too.</p>
+
+{var $repoPath = realpath(dirname($webgen->currentFile) . '/../../.git')}
+<p>Tags in Webgen repository:</p>
+
+<ul n:if="$repoPath">
+	{var $repo = new Cz\Git\GitRepository($repoPath)}
+	<li n:foreach="$repo->getTags() as $tag">{$tag}</li>
+</ul>
+
+<p n:if="!$repoPath">Repository not found.</p>
+
+<p n:if="$repoPath">Repository: {$repoPath}</p>
+
