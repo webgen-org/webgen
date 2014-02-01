@@ -14,6 +14,7 @@
 	require __DIR__ . '/libs/Webgen/FileTemplate.php';
 	require __DIR__ . '/libs/Webgen/Webgen.php';
 	require __DIR__ . '/libs/Webgen/Finder.php';
+	require __DIR__ . '/libs/Webgen/Autoloading.php';
 	require __DIR__ . '/libs/Cli/Cli.php';
 
 
@@ -56,6 +57,8 @@ Parameters:
 				'layout' => '@layout.latte',	// name of layout file
 				'dir' => 'input', // name of input directory
 				'copy' => FALSE, // copy another (images, JS, CSS) files into output directory
+				'libsDir' => 'libs', // name of libs directory, handled by RobotLoader
+				'composerFile' => 'composer.json',
 			),
 
 			'output' => array(
@@ -65,6 +68,7 @@ Parameters:
 				'purge' => FALSE,   // purge output directory?
 				'onedir' => FALSE,
 				'lastBuildInfo' => TRUE, // generate last build info file?
+				'cacheDir' => 'cache',
 			),
 
 			'variables' => array(
@@ -147,6 +151,37 @@ Parameters:
 		{
 			\Cli\Cli::error("\nError: Directory '$inputDirectory' is not exists.\n\n");
 			exit(11);
+		}
+
+
+		// Autoloading
+		$composerFile = is_string($config['input']['composerFile']) ? \Cli\Cli::formatPath($config['input']['composerFile'], $dir) : NULL;
+		$libsDir = \Cli\Cli::formatPath($config['input']['libsDir'], $dir);
+		$autoloading = new \Webgen\Autoloading($composerFile, $libsDir);
+		$autoloading->autoload();
+
+		if ($robotLoader = $autoloading->createRobotLoader()) {
+			\Cli\Cli::log('Register RobotLoader...');
+			\Cli\Cli::log('Scan dir: ' . $libsDir);
+
+			$cacheDir = $config['output']['cacheDir'];
+
+			if (is_string($cacheDir)) {
+				$cacheDir = \Cli\Cli::formatPath($cacheDir, $dir);
+				\Cli\Cli::log('Cache dir: ' . $cacheDir);
+
+				// create cache dir
+				if (!is_dir($cacheDir) && !@mkdir($cacheDir, 0777, TRUE)) {
+					\Cli\Cli::error('Error: Create cache dir failed');
+					$robotLoader->setCacheStorage(new \Nette\Caching\Storages\MemoryStorage);
+				} else {
+					$robotLoader->setCacheStorage(new \Nette\Caching\Storages\FileStorage($cacheDir));
+				}
+			} else {
+				\Cli\Cli::log('No cache dir for RobotLoader');
+			}
+
+			$robotLoader->register();
 		}
 
 
