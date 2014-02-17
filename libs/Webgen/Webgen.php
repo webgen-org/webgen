@@ -18,6 +18,12 @@
 		}
 
 
+		public function getSourceDirectory()
+		{
+			return $this->generator->getSourceDirectory();
+		}
+
+
 		public function getCurrentFile()
 		{
 			return $this->generator->getCurrentFile();

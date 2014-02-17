@@ -118,6 +118,13 @@
 
 
 
+		public function getSourceDirectory()
+		{
+			return $this->inputDirectory;
+		}
+
+
+
 		public function getCurrentFile()
 		{
 			return $this->currentFile;
