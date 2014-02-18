@@ -51,9 +51,9 @@
 
 
 
-		public function __construct()
+		public function __construct(\Nette\Caching\IStorage $cacheStorage = NULL)
 		{
-			$this->cacheStorage = new \Nette\Caching\Storages\MemoryStorage;
+			$this->cacheStorage = isset($cacheStorage) ? $cacheStorage : (new \Nette\Caching\Storages\MemoryStorage);
 			$this->presenter = new \Webgen\FakePresenter($this);
 		}
 
