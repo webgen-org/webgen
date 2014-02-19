@@ -49,7 +49,7 @@
 		 */
 		public function isLinkCurrent($pages/*, ...*/)
 		{
-			$currentFile = $this->getCurrentFile();
+			$currentFile = $this->getCurrentFileLink();
 
 			if ($currentFile === NULL) {
 				throw new WebgenException('nezpracovava se zadny soubor');
@@ -74,7 +74,7 @@
 		 */
 		public function createRelativeLink($destination)
 		{
-			$currentFile = $this->getCurrentFile();
+			$currentFile = $this->getCurrentFileLink();
 
 			if ($currentFile === NULL) {
 				throw new WebgenException('nezpracovava se zadny soubor');

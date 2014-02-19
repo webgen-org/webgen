@@ -132,6 +132,16 @@
 
 
 
+		public function getCurrentFileLink()
+		{
+			if (isset($this->currentFileConfig['fileLink'])) {
+				return $this->currentFileConfig['fileLink'];
+			}
+			return $this->getCurrentFile();
+		}
+
+
+
 		public function getCurrentIteration()
 		{
 			return $this->currentIteration;
@@ -172,6 +182,17 @@
 						throw new WebgenException('Output filename must be string.');
 					}
 					$this->currentFileConfig['name'] = (string) $config['name'];
+				}
+			}
+
+			if (array_key_exists('fileLink', $config)) {
+				if ($config['fileLink'] === NULL) {
+					$this->currentFileConfig['fileLink'] = NULL;
+				} else {
+					if (!is_string($config['fileLink']) && !is_numeric($config['fileLink'])) {
+						throw new WebgenException('Output filename must be string.');
+					}
+					$this->currentFileConfig['fileLink'] = (string) $config['fileLink'];
 				}
 			}
 		}
