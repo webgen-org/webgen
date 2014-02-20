@@ -152,7 +152,7 @@
 			// Priklady:
 			// */contact.html => about/contact.html, ale ne en/about/contact.html
 			// en/*/index.html => en/about/index.html, ale ne en/about/references/index.html
-			// (tj. nematchuje ̈́'/')
+			// (tj. nematchuje '/')
 			// ALE!
 			// about/* => about/index.html i about/references/index.html
 			// (tj. wildcard na konci matchuje i '/')
