@@ -31,6 +31,12 @@
 		/** @var  string|NULL */
 		private $currentFile;
 
+		/** @var  string|NULL */
+		private $currentOutputFile;
+
+		/** @var  \SplFileInf */
+		private $currentFileInfo;
+
 		/** @var  array */
 		private $currentFileConfig;
 
@@ -132,12 +138,38 @@
 
 
 
+		public function getCurrentOutputFile()
+		{
+			if (!is_string($this->currentOutputFile)) {
+				$directory = dirname(substr($this->currentFile, strlen($this->inputDirectory))) . '/';
+
+				if ($this->currentFileConfig['filename'] !== NULL) {
+					$this->currentOutputFile = self::absolutizePath($directory . $this->currentFileConfig['filename']);
+					return $this->currentOutputFile;
+				}
+
+				if ($this->currentFileConfig['name'] !== NULL) {
+					$this->currentOutputFile = $this->currentFileConfig['name'];
+				} else {
+					$this->currentOutputFile = $this->currentFileInfo->getBasename($this->currentFileInfo->getExtension())
+						. ($this->currentIteration > 1 ? "{$this->currentIteration}" : '');
+				}
+
+				// add file extension
+				$this->currentOutputFile = self::absolutizePath($this->currentOutputFile . '.' . $this->currentFileConfig['ext']);
+			}
+
+			return $this->currentOutputFile;
+		}
+
+
+
 		public function getCurrentFileLink()
 		{
 			if (isset($this->currentFileConfig['fileLink'])) {
 				return $this->currentFileConfig['fileLink'];
 			}
-			return $this->getCurrentFile();
+			return $this->getCurrentOutputFile();
 		}
 
 
@@ -205,6 +237,7 @@
 			$this->currentFileConfig['filename'] = NULL;
 			$this->currentFileConfig['name'] = NULL;
 			$this->currentIteration = 1;
+			$this->currentFileInfo = $fileInfo;
 			$this->template = $template = $this->createTemplate();
 			$texy = new \Webgen\Texy($this->config['variables']['baseDir']);
 			$texy->headingModule->top = 2;
@@ -272,7 +305,7 @@
 				$tpl = clone $template;
 				$tpl->setSource($content);
 				$content = $tpl->__toString(TRUE); // render to var
-				$fileName = $this->formatOutputFilePath($filePath, $fileInfo); // format output filepath
+				$fileName = $this->getCurrentOutputFilePath(); // format output filepath
 				$this->saveFile($fileName, $content); // save into file
 				$this->currentIteration++;
 			} while ($this->repeatGenerating);
@@ -560,23 +593,9 @@
 
 
 
-		protected function formatOutputFilePath($filePath, \SplFileInfo $fileInfo)
+		protected function getCurrentOutputFilePath()
 		{
-			$name = $this->outputFileDirectory;
-			$name .= dirname(substr($filePath, strlen($this->inputDirectory))) . '/';
-
-			if ($this->currentFileConfig['filename'] !== NULL) {
-				return $name . $this->currentFileConfig['filename'];
-			}
-
-			if ($this->currentFileConfig['name'] !== NULL) {
-				$name .= $this->currentFileConfig['name'] . '.';
-			} else {
-				$name .= $fileInfo->getBasename($fileInfo->getExtension())
-					. ($this->currentIteration > 1 ? "{$this->currentIteration}." : '');
-			}
-
-			return $name . $this->currentFileConfig['ext'];
+			return $this->outputFileDirectory . '/' . $this->getCurrentOutputFile();
 		}
 
 
@@ -768,6 +787,25 @@
 		public static function setLastBuildDate($filePath, \DateTime $datetime)
 		{
 			file_put_contents($filePath, $datetime->format(\DateTime::ISO8601));
+		}
+
+
+		public static function absolutizePath($path)
+		{
+			$path = explode('/', $path);
+			$buffer = array();
+
+			foreach ($path as $part) {
+				if ($part === '' || $part === '.') { // // || /./
+					continue;
+				} elseif ($part === '..') { // /../
+					array_pop($buffer);
+				} else {
+					$buffer[] = $part;
+				}
+			}
+
+			return implode('/', $buffer);
 		}
 	}
 
