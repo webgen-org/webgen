@@ -141,7 +141,7 @@
 		public function getCurrentOutputFile()
 		{
 			if (!is_string($this->currentOutputFile)) {
-				$directory = dirname(substr($this->currentFile, strlen($this->inputDirectory))) . '/';
+				$directory = dirname($this->currentFile) . '/';
 
 				if ($this->currentFileConfig['filename'] !== NULL) {
 					$this->currentOutputFile = self::absolutizePath($directory . $this->currentFileConfig['filename']);
@@ -151,12 +151,12 @@
 				if ($this->currentFileConfig['name'] !== NULL) {
 					$this->currentOutputFile = $this->currentFileConfig['name'];
 				} else {
-					$this->currentOutputFile = $this->currentFileInfo->getBasename($this->currentFileInfo->getExtension())
-						. ($this->currentIteration > 1 ? "{$this->currentIteration}" : '');
+					$this->currentOutputFile = $this->currentFileInfo->getBasename('.' . $this->currentFileInfo->getExtension())
+						. ($this->currentIteration > 1 ? "-{$this->currentIteration}" : '');
 				}
 
 				// add file extension
-				$this->currentOutputFile = self::absolutizePath($this->currentOutputFile . '.' . $this->currentFileConfig['ext']);
+				$this->currentOutputFile = self::absolutizePath($directory . $this->currentOutputFile . '.' . $this->currentFileConfig['ext']);
 			}
 
 			return $this->currentOutputFile;
@@ -189,6 +189,7 @@
 				}
 
 				$this->currentFileConfig['ext'] = (string) $config['ext'];
+				$this->currentOutputFile = NULL;
 			}
 
 			if (isset($config['repeatGenerating'])) {
@@ -204,6 +205,7 @@
 					}
 					$this->currentFileConfig['filename'] = (string) $config['filename'];
 				}
+				$this->currentOutputFile = NULL;
 			}
 
 			if (array_key_exists('name', $config)) {
@@ -215,6 +217,7 @@
 					}
 					$this->currentFileConfig['name'] = (string) $config['name'];
 				}
+				$this->currentOutputFile = NULL;
 			}
 
 			if (array_key_exists('fileLink', $config)) {
@@ -302,6 +305,7 @@
 			$this->repeatGenerating = FALSE;
 
 			do {
+				$this->currentOutputFile = NULL;
 				$tpl = clone $template;
 				$tpl->setSource($content);
 				$content = $tpl->__toString(TRUE); // render to var
