@@ -9,7 +9,7 @@
 		<li n:for="$i = 0; $i < $pageCount; $i++">
 			{var $page = ''}
 			{if $i > 0}
-				{var $page = '.' . ($i+1)}
+				{var $page = '-' . ($i+1)}
 			{/if}
 			<a n:href="repeated-generating/index$page.html">Page #{$i+1}</a>
 		</li>
