@@ -15,6 +15,17 @@ Features
 Usage
 -----
 
+### Non-incremental generating
+
+```
+$ cd examples/basic
+$ php -f ../../webgen.phpc -- --run --onedir
+$ cd output
+$ ls
+articles  index.html
+```
+
+
 ### Incremental generating
 
 ```
@@ -61,17 +72,7 @@ $ ls
 index.html
 ```
 
-### Non-incremental generating
-
 You can use parameter ```--onedir``` for disabling of incremental generating. This parameter ignores date of last generating too (generates all files like parameter ```--force```).
-
-```
-$ cd examples/basic
-$ php -f ../../webgen.phpc -- --run --onedir
-$ cd output
-$ ls
-articles  index.html
-```
 
 **Note:** you can use config option ```output.onedir``` in your config file (see [config.neon](examples/basic/config.neon)) instead of ```--onedir``` parameter.
 
@@ -191,7 +192,7 @@ input:
 	layout: @my-layout-name.latte
 ```
 
-**Copy files from source directory** into output directory (CSS & JS files, images,...)
+**Copy files from source directory into output directory (CSS & JS files, images,...)**
 
 Boolean value (`yes`/`no`) or filemask(s):
 
@@ -207,7 +208,7 @@ input:
         - *.css
 ```
 
-**Purge output directory** before generating (boolean value (`yes`/`no`) or filemask(s))
+**Purge output directory before generating (boolean value (`yes`/`no`) or filemask(s))**
 
 ```
 output:
@@ -257,11 +258,15 @@ File-specific change:
 {webgen filename => my-first-page.html}
 ```
 
-**Disable generating of ```lastBuild.dat``` file**
+**Disable/enable generating of ```lastBuild.dat``` file**
 
 ```
 output:
     lastBuildInfo: off
+    # values:
+    #    off    - disabled
+    #    on     - enabled
+    #    NULL   - auto detected by mode
 ```
 
 
