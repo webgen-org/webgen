@@ -66,8 +66,8 @@ Parameters:
 				'ext' => 'html',	// output file extension
 				'xhtml' => FALSE,	// enables or disables XHTML output
 				'purge' => FALSE,   // purge output directory?
-				'onedir' => FALSE,
-				'lastBuildInfo' => TRUE, // generate last build info file?
+				'onedir' => TRUE,   // disables incremental generating
+				'lastBuildInfo' => NULL, // generate last build info file?
 				'cacheDir' => 'cache',
 			),
 
@@ -135,6 +135,10 @@ Parameters:
 		// Settings
 		if (isset($params['onedir'])) {
 			$config['output']['onedir'] = TRUE;
+		}
+
+		if ($config['output']['lastBuildInfo'] === NULL /* auto */) {
+			$config['output']['lastBuildInfo'] = !$config['output']['onedir'];
 		}
 
 		$inputDirectory = \Cli\Cli::formatPath($config['input']['dir'], $dir);

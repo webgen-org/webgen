@@ -7,6 +7,5 @@ input:
 
 output:
 	purge: yes
-	onedir: yes
-	lastBuildInfo: off
+	# lastBuildInfo: off
 

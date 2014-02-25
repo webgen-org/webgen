@@ -6,6 +6,5 @@ input:
 	copy: yes
 
 output:
-	onedir: yes
 	purge: yes
 

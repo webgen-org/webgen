@@ -2,6 +2,3 @@
 # Visit http://ne-on.org/ for syntax details.
 #
 
-output:
-	onedir: yes
-

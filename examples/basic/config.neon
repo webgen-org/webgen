@@ -17,8 +17,8 @@ output:
 	ext: html    # output files extension
 	xhtml: no    # enables or disables XHTML output
 	purge: off   # purge output directory before generating?
-	onedir: no
-	lastBuildInfo: yes # generate last build info file?
+	onedir: yes  # disables incremental generating
+	lastBuildInfo: NULL # generate last build info file?
 
 
 variables:
