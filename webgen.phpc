@@ -260,7 +260,7 @@ Parameters:
 		}
 
 
-		\Cli\Cli::log("Done.\n");
+		\Cli\Cli::success("Done.\n");
 
 	}
 	catch(Exception $e)
