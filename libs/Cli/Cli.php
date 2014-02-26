@@ -10,7 +10,7 @@
 	class Cli
 	{
 		/** @var  bool|NULL */
-		protected static $isWindows = NULL;
+		protected static $coloredOutput = NULL;
 
 
 
@@ -31,12 +31,12 @@
 		 */
 		public static function error($str)
 		{
-			if(self::$isWindows === NULL)
+			if(self::$coloredOutput === NULL)
 			{
 				self::detectOs();
 			}
 
-			if(!self::$isWindows)
+			if(self::$coloredOutput)
 			{
 				$str = "\033[31m" . $str . "\033[37m\r\n";
 			}
@@ -132,16 +132,11 @@
 		/**
 		 * @return	void
 		 */
-		protected static function detectOs()
+		protected static function detectColors()
 		{
-			if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-			{
-				self::$isWindows = TRUE;
-			}
-			else
-			{
-				self::$isWindows = FALSE;
-			}
+			self::$coloredOutput = (getenv('ConEmuANSI') === 'ON'
+				|| getenv('ANSICON') !== FALSE
+				|| (defined('STDOUT') && function_exists('posix_isatty') && posix_isatty(STDOUT)));
 		}
 	}
 
