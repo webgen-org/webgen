@@ -45,6 +45,26 @@
 		}
 
 
+		/**
+		 * @param	string
+		 * @return	void
+		 */
+		public static function success($str)
+		{
+			if(self::$coloredOutput === NULL)
+			{
+				self::detectColors();
+			}
+
+			if(self::$coloredOutput)
+			{
+				$str = "\033[32m" . $str . "\033[37m\r\n";
+			}
+
+			echo $str;
+		}
+
+
 
 		/**
 		 * @param	array
