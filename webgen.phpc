@@ -21,9 +21,19 @@
 	use Nette\Utils\Finder;
 
 	date_default_timezone_set('Europe/Prague');
-
-#	\Nette\Diagnostics\Debugger::$strictMode = FALSE;
-#	\Nette\Diagnostics\Debugger::enable(\Nette\Diagnostics\Debugger::DEVELOPMENT, FALSE);
+	set_time_limit(0);
+	set_error_handler(function($severity, $message, $file, $line) {
+		if (($severity & error_reporting()) === $severity) {
+			\Cli\Cli::error("Error: $message in $file on $line");
+			ob_flush();
+			echo "\n\n";
+			exit(2);
+		}
+		return FALSE;
+	});
+	set_exception_handler(function($e) {
+		\Cli\Cli::error("Error: {$e->getMessage()} in {$e->getFile()} on {$e->getLine()}\n");
+	});
 
 	try
 	{
