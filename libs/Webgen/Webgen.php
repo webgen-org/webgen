@@ -69,6 +69,32 @@
 
 
 		/**
+		 * @param  string|string[]
+		 * @throws WebgenException
+		 * @return bool
+		 */
+		public function isFileCurrent($pages/*, ...*/)
+		{
+			$currentFile = $this->getCurrentFile();
+
+			if ($currentFile === NULL) {
+				throw new WebgenException('nezpracovava se zadny soubor');
+			}
+
+			if (!is_array($pages)) {
+				$pages = func_get_args();
+			}
+
+			foreach ($pages as $page) {
+				if (self::isPathCurrent($currentFile, $page)) {
+					return TRUE;
+				}
+			}
+			return FALSE;
+		}
+
+
+		/**
 		 * @param  string
 		 * @return string
 		 */
