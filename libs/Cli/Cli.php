@@ -33,7 +33,7 @@
 		{
 			if(self::$coloredOutput === NULL)
 			{
-				self::detectOs();
+				self::detectColors();
 			}
 
 			if(self::$coloredOutput)
