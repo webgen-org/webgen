@@ -1,0 +1,67 @@
+{var $hideHpLink = TRUE}
+{var $myVar = 'my value 1'}
+
+{block #content}
+<h1 n:block="title">WebGen 2.1 - Example - Syntax highlighter</h1>
+
+<a n:href="texy-highlighter.html">Highlighter in Texy</a>
+
+<h2>PHP</h2>
+<p>First:</p>
+<pre>
+{block|highlighter:php}
+<?
+echo "Hello!";
+?>
+{/block}
+</pre>
+
+<p>Second:</p>
+<pre>
+{block|highlighter:php}
+echo "Hello!";
+{/block}
+</pre>
+
+Don't use <code>&lt;?php</code>:
+<pre>
+{block|highlighter:php}
+<?php
+echo "Hello!";
+?>
+{/block}
+</pre>
+
+or use:
+
+<pre>
+{!='<'.'?php
+echo "Hello!"
+if ($var === "webgen") {
+	echo "FSHL";
+}
+'|highlighter:php}
+</pre>
+
+
+
+<h2>JavaScript</h2>
+<pre>
+{block|highlighter:javascript} {* or highlighter:js*}
+alert('Hello!');
+if (var === 'webgen') {
+	console.log('FSHL!');
+}
+{/block}
+</pre>
+
+
+<h2>HTML</h2>
+<pre> {* or highlighter:js*}
+{block|highlighter:html}
+<h1>Hello!</h1>
+
+<p>Lorem ipsum dolor sit amet</p>
+{/block}
+</pre>
+

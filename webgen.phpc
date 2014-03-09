@@ -7,6 +7,7 @@
 
 	require __DIR__ . '/libs/Nette/nette.min.php';
 	require __DIR__ . '/libs/Texy/texy.min.php';
+	require __DIR__ . '/libs/FSHL/loader.php';
 	require __DIR__ . '/libs/Webgen/FakePresenter.php';
 	require __DIR__ . '/libs/Webgen/Generator.php';
 	require __DIR__ . '/libs/Webgen/Texy.php';
@@ -14,6 +15,7 @@
 	require __DIR__ . '/libs/Webgen/FileTemplate.php';
 	require __DIR__ . '/libs/Webgen/Webgen.php';
 	require __DIR__ . '/libs/Webgen/Finder.php';
+	require __DIR__ . '/libs/Webgen/Highlighter.php';
 	require __DIR__ . '/libs/Webgen/Autoloading.php';
 	require __DIR__ . '/libs/Cli/Cli.php';
 
@@ -85,6 +87,12 @@ Parameters:
 				'cacheDir' => 'cache',
 			),
 
+			'extensions' => array(
+				'syntaxHighlighter' => FALSE, // enable syntax highlighter via FSHL (in Texy & Latte)
+				'syntaxHighlighterPhpBlock' => FALSE, // enable highlighter between <?php ? > (in Texy)
+				'syntaxHighlighterScriptBlock' => FALSE, // enable highlighter between <script></script> (in Texy)
+			),
+
 			'variables' => array(
 				'baseDir' => '',	// baseDir variable, etc. '/my_web_subdir'
 			),
@@ -128,6 +136,16 @@ Parameters:
 			else
 			{
 				$config['output'] = $defaultConfig['output'];
+			}
+
+			// Extensions
+			if(isset($userConfig['extensions']))
+			{
+				$config['extensions'] = $userConfig['extensions'] + $defaultConfig['extensions'];
+			}
+			else
+			{
+				$config['extensions'] = $defaultConfig['extensions'];
 			}
 
 			// Variables

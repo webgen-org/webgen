@@ -55,12 +55,16 @@
 		/** @var  \Webgen\FakePresenter @internal */
 		private $presenter;
 
+		/** @var  \Webgen\Highlighter */
+		private $highlighter;
+
 
 
 		public function __construct(\Nette\Caching\IStorage $cacheStorage = NULL)
 		{
 			$this->cacheStorage = isset($cacheStorage) ? $cacheStorage : (new \Nette\Caching\Storages\MemoryStorage);
 			$this->presenter = new \Webgen\FakePresenter($this);
+			$this->highlighter = new \Webgen\Highlighter;
 		}
 
 
@@ -545,6 +549,7 @@
 
 			// Register helpers
 			$template->registerHelperLoader('\Nette\Templating\Helpers::loader');
+			$template->registerHelper('highlighter', array($this->highlighter, 'highlight'));
 
 			return $template;
 		}
@@ -749,6 +754,28 @@
 			$texy->addHandler('linkReference', callback($this, 'linkReferenceHandler'));
 			$texy->addHandler('figure', callback($this, 'figureHandler'));
 			$texy->addHandler('image', callback($this, 'imageHandler'));
+
+			if ($this->config['extensions']['syntaxHighlighter']) {
+				$texy->addHandler('block', array($this->highlighter, 'blockHandler'));
+			}
+
+			if ($this->config['extensions']['syntaxHighlighterPhpBlock']) {
+				// add new syntax: <?php ... ? >
+				$texy->registerBlockPattern(
+					array($this->highlighter, 'codeBlockHandler'),
+					'#^<\\?php\n.+?\n\\?>$#ms', // block patterns must be multiline and line-anchored
+					'phpBlockSyntax'
+				);
+			}
+
+			if ($this->config['extensions']['syntaxHighlighterScriptBlock']) {
+				// add new syntax: <s c r i p t ...> ... </script>
+				$texy->registerBlockPattern(
+					array($this->highlighter, 'codeBlockHandler'),
+					'#^<script(?: type=.?text/javascript.?)?>\n.+?\n</script>$#ms', // block patterns must be multiline and line-anchored
+					'scriptBlockSyntax'
+				);
+			}
 		}
 
 

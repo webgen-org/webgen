@@ -21,5 +21,16 @@ output:
 	lastBuildInfo: NULL # generate last build info file?
 
 
+extensions:
+	# enable syntax highlighter via FSHL (in Texy & Latte)
+	syntaxHighlighter: off
+
+	# enable highlighter between <?php ?> (in Texy)
+	syntaxHighlighterPhpBlock: off
+
+	# enable highlighter between <script></script> (in Texy)
+	syntaxHighlighterScriptBlock: off
+
+
 variables:
 	baseDir: ''

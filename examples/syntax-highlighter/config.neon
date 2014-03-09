@@ -1,0 +1,14 @@
+#
+# Visit http://ne-on.org/ for syntax details.
+#
+
+input:
+	copy: yes
+
+output:
+	purge: yes
+
+extensions:
+	syntaxHighlighter: on
+	syntaxHighlighterPhpBlock: on
+	syntaxHighlighterScriptBlock: on

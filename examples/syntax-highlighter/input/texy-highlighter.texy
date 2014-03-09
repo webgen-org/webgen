@@ -1,0 +1,46 @@
+
+Highlighter in Texy
+###################
+
+"Back to homepage":@/
+
+/--- code php
+<?php
+echo "Hello!";
+if ($var === 'webgen') {
+	echo "FSHL!"; // http://fshl.kukulich.cz/
+}
+?>
+\---
+
+------------------
+
+/--- code php
+echo "Hello!";
+if ($var === 'webgen') {
+	echo "FSHL!"; // http://fshl.kukulich.cz/
+}
+\---
+
+
+PhpBlock highlighter
+====================
+
+*See Texy source file.*
+
+<?php
+echo "Hello!";
+if ($var === 'webgen') {
+	echo "FSHL!"; // http://fshl.kukulich.cz/
+}
+?>
+
+
+ScriptBlock highlighter
+=======================
+
+*See Texy source file.*
+
+<script>
+alert('Hello!');
+</script>
