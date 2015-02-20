@@ -205,7 +205,7 @@
 Webgen 2.1.0-dev
 ----------------
 Usage:
-	php -f webgen.phpc -- --run
+	php -f webgen.php -- --run
 
 Parameters:
 	--run           enables generating [required]

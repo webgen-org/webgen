@@ -8,5 +8,5 @@ if echo $dir | grep -v ^/ > /dev/null; then
 	dir=` pwd `/$dir
 fi
 
-# runs webgen.phpc with script's arguments
-php -f "/path/to/webgen.phpc" -- $*
+# runs webgen.php with script's arguments
+php -f "/path/to/webgen.php" -- $*
