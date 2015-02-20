@@ -71,10 +71,6 @@
 		 */
 		public function addConfig(array $config)
 		{
-			//$config = $config + $defaultConfig;
-			$userConfig = $config;
-			$config = array();
-
 			$sections = array(
 				'input' => TRUE,
 				'output' => TRUE,
