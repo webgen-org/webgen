@@ -202,6 +202,7 @@
 		private function info()
 		{
 			echo <<<XX
+
 Webgen 2.1.0-dev
 ----------------
 Usage:
@@ -209,10 +210,14 @@ Usage:
 
 Parameters:
 	--run           enables generating [required]
-	--force         regenerates all files (not only changed)
 	--config        name of config file
 	--dir           project directory (current working directory by default)
+
+	[incremental mode]
+	--force         regenerates all files (not only changed)
 	--onedir        disables incremental mode
+
+
 XX;
 		}
 	}
