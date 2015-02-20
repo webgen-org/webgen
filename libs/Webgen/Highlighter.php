@@ -80,7 +80,7 @@
 			$lexer = $this->getFshlLexer($lang);
 
 			if (!$lexer) {
-				return $invocation->proceed();
+				return FALSE;
 			}
 
 			$texy = $parser->getTexy();
