@@ -9,28 +9,28 @@ Features
 
 * [Texy!](http://texy.info/) support
 * [Latte templates](http://doc.nette.org/en/templating#toc-latte) support
-* incremental generating
+* incremental mode
 
 
 Usage
 -----
 
-### Non-incremental generating
+### Non-incremental mode
 
 ```
 $ cd examples/basic
-$ php -f ../../webgen.phpc -- --run --onedir
+$ php -f ../../webgen.php -- --run --onedir
 $ cd output
 $ ls
 articles  index.html
 ```
 
 
-### Incremental generating
+### Incremental mode
 
 ```
 $ cd my-web-local-directory
-$ php -f /path/to/webgen.phpc -- --run
+$ php -f /path/to/webgen.php -- --run
 # or 'webgen --run' (see file bin/readme.md for details)
 ```
 
@@ -38,7 +38,7 @@ For example:
 
 ```
 $ cd examples/basic
-$ php -f ../../webgen.phpc -- --run
+$ php -f ../../webgen.php -- --run
 ```
 
 Webgen creates subdirectories (eg. `2013-12-12_14:15:16`) in output directory and generates only files changed from date of last generating. You can use parameter ```--force```, then Webgen will generating all files.
@@ -61,7 +61,7 @@ After editing of ```index.html```:
 $ cd ../../input
 $ touch index.html
 $ cd ..
-$ php -f ../../webgen.phpc -- --run
+$ php -f ../../webgen.php -- --run
 
 $ cd output
 $ ls
@@ -72,7 +72,7 @@ $ ls
 index.html
 ```
 
-You can use parameter ```--onedir``` for disabling of incremental generating. This parameter ignores date of last generating too (generates all files like parameter ```--force```).
+You can use parameter ```--onedir``` for disabling of incremental mode. This parameter ignores date of last generating too (generates all files like parameter ```--force```).
 
 **Note:** you can use config option ```output.onedir``` in your config file (see [config.neon](examples/basic/config.neon)) instead of ```--onedir``` parameter.
 
