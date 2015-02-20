@@ -177,7 +177,7 @@
 				$config['output']['onedir'] = TRUE;
 			}
 
-			if ($config['output']['lastBuildInfo'] === NULL /* auto */) {
+			if (isset($config['output']) && array_key_exists('lastBuildInfo', $config['output']) && $config['output']['lastBuildInfo'] === NULL /* auto */) {
 				if (isset($config['output']['onedir'])) {
 					$config['output']['lastBuildInfo'] = !$config['output']['onedir'];
 				} else {
