@@ -23,6 +23,9 @@
 		/** @var bool */
 		public $forceMode = FALSE;
 
+		/** @var string @internal */
+		public $currentDirectory;
+
 		/** @var ILogger */
 		protected $logger;
 
@@ -132,7 +135,7 @@
 				// Save datetime of build
 				if ($config['output']['lastBuildInfo']) {
 					$this->log("Saving last build infos...");
-					\WebGen\Generator::setLastBuildDate($dir . '/lastBuild.dat', new DateTime);
+					\WebGen\Generator::setLastBuildDate($this->currentDirectory . '/lastBuild.dat', new DateTime);
 				}
 
 				$this->logger->success("Done.\n");
@@ -162,7 +165,7 @@
 				$filename = $file->getFilename();
 
 				if ($filename[0] === '@') {
-					$this->log("[ignored] $filePath");
+					$this->log("[ignored] $path");
 					continue;
 				}
 				$this->log($path);
@@ -189,7 +192,7 @@
 			$finder = NFinder::findFiles('*.texy', '*.latte');
 
 			if (!$this->forceMode && !$config['output']['onedir']) {
-				$lastBuildDate = \Webgen\Generator::getLastBuildDate($dir . '/lastBuild.dat');
+				$lastBuildDate = \Webgen\Generator::getLastBuildDate($this->currentDirectory . '/lastBuild.dat');
 
 				if ($lastBuildDate !== FALSE) {
 					// kdyz nebyl od posledne zmenen layout => muzeme generovat jenom zmenene soubory, jinak vsechny
@@ -213,11 +216,11 @@
 		private function check()
 		{
 			if (!is_file($this->layoutPath)) {
-				throw new RunnerException("File '$layoutPath' is not exists.", 10);
+				throw new RunnerException("File '{$this->layoutPath}' is not exists.", 10);
 			}
 
 			if (!is_dir($this->inputDirectory)) {
-				throw new RunnerException("Directory '$inputDirectory' is not exists.", 11);
+				throw new RunnerException("Directory '{$this->inputDirectory}' is not exists.", 11);
 			}
 		}
 	}
