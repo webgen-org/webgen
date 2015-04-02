@@ -38,10 +38,10 @@
 
 			if(self::$coloredOutput)
 			{
-				$str = "\033[31m" . $str . "\033[37m\r\n";
+				$str = "\033[0;31m" . $str . "\033[0m";
 			}
 
-			fwrite(STDERR, $str);
+			fwrite(STDERR, "$str\n");
 		}
 
 
@@ -58,10 +58,10 @@
 
 			if(self::$coloredOutput)
 			{
-				$str = "\033[32m" . $str . "\033[37m\r\n";
+				$str = "\033[1;32m" . $str . "\033[0m";
 			}
 
-			echo $str;
+			echo "$str\n";
 		}
 
 
