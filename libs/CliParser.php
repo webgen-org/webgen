@@ -185,12 +185,13 @@
 				}
 			}
 
+			$this->runner->addConfig($config);
+			$config = $this->runner->getConfig();
 			$this->runner->inputDirectory = \Cli\Cli::formatPath($config['input']['dir'], $dir);
 			$this->runner->outputDirectory = \Cli\Cli::formatPath($config['output']['dir'], $dir);
 			$this->runner->layoutPath = \Cli\Cli::formatPath($config['input']['layout'], $dir);
 			$this->runner->forceMode = $parameters['force'];
 			$this->runner->currentDirectory = $this->currentDirectory;
-			$this->runner->addConfig($config);
 
 			return TRUE;
 		}
