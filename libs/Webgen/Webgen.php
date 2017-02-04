@@ -30,6 +30,15 @@
 		}
 
 
+		/**
+		 * @return string
+		 */
+		public function getCurrentPath()
+		{
+			return $this->generator->getCurrentFileLink();
+		}
+
+
 		public function getCurrentIteration()
 		{
 			return $this->generator->getCurrentIteration();
