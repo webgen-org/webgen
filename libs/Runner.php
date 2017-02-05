@@ -56,7 +56,7 @@
 					'purge' => FALSE,   // purge output directory?
 					'onedir' => TRUE,   // disables incremental generating
 					'lastBuildInfo' => NULL, // generate last build info file?
-					'cacheDir' => 'cache',
+					'cacheDir' => NULL,
 					'productionMode' => FALSE,
 				),
 

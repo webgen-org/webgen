@@ -100,6 +100,7 @@
 					}
 				} else {
 					$this->logger->log('No cache dir for RobotLoader');
+					$robotLoader->setCacheStorage(new \Nette\Caching\Storages\MemoryStorage);
 				}
 
 				$robotLoader->register();
