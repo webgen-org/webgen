@@ -19,6 +19,9 @@
 		/** @var Runner */
 		private $runner;
 
+		/** @var bool */
+		private $watchMode = FALSE;
+
 		/** @var string */
 		private $currentDirectory;
 
@@ -45,6 +48,19 @@
 		}
 
 
+		public function run(Runner $runner)
+		{
+			if ($this->setup($runner)) {
+				if ($this->watchMode) {
+					$this->watch($runner);
+
+				} else {
+					die($runner->run());
+				}
+			}
+		}
+
+
 		/**
 		 * @return void
 		 */
@@ -64,6 +80,30 @@
 			set_exception_handler(function($e) {
 				\Cli\Cli::error("Error: {$e->getMessage()} in {$e->getFile()} on {$e->getLine()}\n");
 			});
+		}
+
+
+		private function watch(Runner $runner)
+		{
+			$prev = array();
+			$counter = 0;
+
+			while (TRUE) {
+				$state = array();
+
+				foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->runner->inputDirectory)) as $file) {
+					if (substr($file->getBasename(), 0, 1) !== '.') {
+						$state[(string) $file] = md5_file((string) $file);
+					}
+				}
+
+				if ($state !== $prev) {
+					$prev = $state;
+					$runner->run();
+				}
+				echo 'Watching ' . str_repeat('.', ++$counter % 5) . "    \r";
+				sleep(2);
+			}
 		}
 
 
@@ -122,6 +162,7 @@
 			$cwDir = getcwd();
 			$dir = isset($params['dir']) ? $params['dir'] : $cwDir;
 			$dir = \Cli\Cli::formatPath($dir, $cwDir);
+			$this->watchMode = isset($params['watch']);
 
 			return array(
 				'directory' => $dir,

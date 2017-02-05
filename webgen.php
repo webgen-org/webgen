@@ -12,7 +12,4 @@
 	$cli = new Webgen\CliParser($logger);
 
 	$cli->prepareEnvironment();
-
-	if ($cli->setup($runner)) {
-		die($runner->run());
-	}
+	$cli->run($runner);
