@@ -23,6 +23,9 @@
 		/** @var bool */
 		public $forceMode = FALSE;
 
+		/** @var bool */
+		public $productionMode = FALSE;
+
 		/** @var string @internal */
 		public $currentDirectory;
 
@@ -54,6 +57,7 @@
 					'onedir' => TRUE,   // disables incremental generating
 					'lastBuildInfo' => NULL, // generate last build info file?
 					'cacheDir' => 'cache',
+					'productionMode' => FALSE,
 				),
 
 				'extensions' => array(

@@ -294,6 +294,9 @@
 				}
 			}
 
+			// Set default variables
+			$template->productionMode = $this->config['output']['productionMode'];
+
 			// Register Texy! Helper
 			$template->registerHelper('texy', array($texy, 'process'));
 
