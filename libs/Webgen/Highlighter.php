@@ -122,6 +122,15 @@
 
 				case 'NEON':
 					return new FSHL\Lexer\Neon;
+
+				case 'CPP':
+					return new FSHL\Lexer\Cpp;
+
+				case 'JAVA':
+					return new FSHL\Lexer\Java;
+
+				case 'TEXY':
+					return new FSHL\Lexer\Texy;
 			}
 			return FALSE;
 		}
