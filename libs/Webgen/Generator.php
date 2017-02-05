@@ -185,6 +185,13 @@
 
 
 
+		public function isCurrentPageActive()
+		{
+			return $this->currentFileConfig['active'];
+		}
+
+
+
 		public function addCurrentFileConfig(array $config)
 		{
 			if (isset($config['ext'])) {
@@ -234,6 +241,17 @@
 					$this->currentFileConfig['fileLink'] = (string) $config['fileLink'];
 				}
 			}
+
+			if (array_key_exists('active', $config)) {
+				if (is_string($config['active'])) {
+					$config['active'] = strtolower($config['active']);
+
+					if ($config['active'] === 'off' || $config['active'] === 'no' || $config['active'] === 'false') {
+						$config['active'] = FALSE;
+					}
+				}
+				$this->currentFileConfig['active'] = $config['active'];
+			}
 		}
 
 
@@ -243,6 +261,7 @@
 			$this->currentFileConfig = $this->config['output'];
 			$this->currentFileConfig['filename'] = NULL;
 			$this->currentFileConfig['name'] = NULL;
+			$this->currentFileConfig['active'] = TRUE;
 			$this->currentIteration = 1;
 			$this->currentFileInfo = $fileInfo;
 			$this->template = $template = $this->createTemplate();
@@ -316,8 +335,15 @@
 				$tpl = clone $template;
 				$tpl->setSource($content);
 				$content = $tpl->__toString(TRUE); // render to var
-				$fileName = $this->getCurrentOutputFilePath(); // format output filepath
-				$this->saveFile($fileName, $content); // save into file
+
+				if ($this->currentFileConfig['active']) {
+					$fileName = $this->getCurrentOutputFilePath(); // format output filepath
+					$this->saveFile($fileName, $content); // save into file
+
+				} else {
+					\Cli\Cli::log("[inactive] {$this->currentFile}");
+				}
+
 				$this->currentIteration++;
 			} while ($this->repeatGenerating);
 		}

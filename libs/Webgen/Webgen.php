@@ -45,6 +45,15 @@
 		}
 
 
+		/**
+		 * @return bool
+		 */
+		public function isPageActive()
+		{
+			return $this->generator->isCurrentPageActive();
+		}
+
+
 		public function addCurrentFileConfig(array $config)
 		{
 			$this->generator->addCurrentFileConfig($config);
