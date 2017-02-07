@@ -60,6 +60,18 @@
 		}
 
 
+		public function setCurrentPageProperties(array $properties)
+		{
+			$this->generator->setCurrentPageProperties($properties);
+		}
+
+
+		public function getPages(array $orderBy = array(), $parent = '')
+		{
+			return $this->generator->getPages($orderBy, $parent);
+		}
+
+
 		/**
 		 * @param  string|string[]
 		 * @throws WebgenException

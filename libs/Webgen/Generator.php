@@ -40,6 +40,12 @@
 		/** @var  array */
 		private $currentFileConfig;
 
+		/** @var  WebgenPage */
+		private $currentPage;
+
+		/** @var  array */
+		private $currentPageDefaultProperties = array();
+
 		/** @var  int */
 		private $currentIteration;
 
@@ -58,13 +64,17 @@
 		/** @var  \Webgen\Highlighter */
 		private $highlighter;
 
+		/** @var  Pages */
+		private $pages;
 
 
 		public function __construct(\Nette\Caching\IStorage $cacheStorage = NULL)
 		{
 			$this->cacheStorage = isset($cacheStorage) ? $cacheStorage : (new \Nette\Caching\Storages\MemoryStorage);
+			// $this->cacheStorage = new \Nette\Caching\Storages\FileStorage(__DIR__ . '/cache');
 			$this->presenter = new \Webgen\FakePresenter($this);
 			$this->highlighter = new \Webgen\Highlighter;
+			$this->pages = new \Webgen\Pages;
 		}
 
 
@@ -89,6 +99,7 @@
 			}
 
 			$this->processCopy();
+			$this->pages->resetPages();
 		}
 
 
@@ -255,6 +266,11 @@
 		}
 
 
+		public function getPages(array $orderBy = array(), $parent = '')
+		{
+			return $this->pages->getPages($orderBy, $parent);
+		}
+
 
 		public function generate($filePath, \SplFileInfo $fileInfo, Webgen $webgenHelper)
 		{
@@ -262,6 +278,9 @@
 			$this->currentFileConfig['filename'] = NULL;
 			$this->currentFileConfig['name'] = NULL;
 			$this->currentFileConfig['active'] = TRUE;
+			$this->currentPageDefaultProperties = array(
+				'date' => new \DateTime,
+			);
 			$this->currentIteration = 1;
 			$this->currentFileInfo = $fileInfo;
 			$this->template = $template = $this->createTemplate();
@@ -331,14 +350,22 @@
 			$this->repeatGenerating = FALSE;
 
 			do {
+				$this->currentPage = new WebgenPage($this);
+
+				foreach ($this->currentPageDefaultProperties as $defaultProperty => $defaultValue) {
+					$this->currentPage->setProperty($defaultProperty, $defaultValue);
+				}
+
 				$this->currentOutputFile = NULL;
 				$tpl = clone $template;
+				$tpl->currentPage = $this->currentPage;
 				$tpl->setSource($content);
 				$content = $tpl->__toString(TRUE); // render to var
 
 				if ($this->currentFileConfig['active']) {
 					$fileName = $this->getCurrentOutputFilePath(); // format output filepath
 					$this->saveFile($fileName, $content); // save into file
+					$this->pages->addPage($this->getCurrentOutputFile(), $this->currentPage->getProperties());
 
 				} else {
 					\Cli\Cli::log("[inactive] {$this->currentFile}");
@@ -411,8 +438,83 @@
 				$this->addCurrentFileConfig($config);
 				return '';
 			}
+			elseif(substr($cmd, 0, 5) === 'page.' && empty($args))
+			{
+				$property = trim(substr($cmd, 5));
+
+				if ($property !== '') {
+					$parts = explode(' ', $property, 2);
+
+					if (count($parts) === 2) {
+						$parts[1] = $this->convertType(trim($parts[1]));
+
+						if (substr($parts[0], -2) === '[]') { // collection
+							$parts[0] = trim(substr($parts[0], 0, -2));
+							$values = isset($this->currentPageDefaultProperties[$parts[0]]) ? $this->currentPageDefaultProperties[$parts[0]] : array();
+
+							if (!is_array($values)) {
+								$values = array($values);
+							}
+
+							$values[] = $parts[1];
+							$parts[1] = $values;
+						}
+
+						$this->currentPageDefaultProperties[$parts[0]] = $parts[1];
+						return '';
+					}
+				}
+			}
 
 			return $invocation->proceed();
+		}
+
+
+		private function convertType($value)
+		{
+			// bool
+			$tmp = strtolower($value);
+
+			if ($tmp === 'true' || $tmp === 'on' || $tmp === 'yes') {
+				return TRUE;
+
+			} elseif ($tmp === 'false' || $tmp === 'off' || $tmp === 'no') {
+				return FALSE;
+			}
+
+			// datetime
+			if (substr($value, 0, 3) !== '000') { // 0000-00-00
+				if (preg_match('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $value)) { // Y-m-d H:i:s
+					return new \DateTime($value);
+
+				} elseif (preg_match('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}/', $value)) { //  // Y-m-d H:i
+					$datetime = new \DateTime($value);
+					$datetime->setTime($datetime->format('H'), $datetime->format('i'), 0);
+					return $datetime;
+
+				} elseif (preg_match('/\d{4}-\d{2}-\d{2}/', $value)) { //  // Y-m-d
+					$datetime = new \DateTime($value);
+					$datetime->setTime(0, 0, 0);
+					return $datetime;
+				}
+			}
+
+			// int
+			$tmp = (int) $value;
+
+			if (((string) $tmp) === $value) {
+				return $tmp;
+			}
+
+			// floatwebgenHelper
+			$tmp = (float) $value;
+
+			if (((string) $tmp) === $value) {
+				return $tmp;
+			}
+
+			// string
+			return $value;
 		}
 
 
@@ -600,6 +702,7 @@
 			// own macros
 			$set = new Nette\Latte\Macros\MacroSet($latte->compiler);
 			$set->addMacro('webgen', '$webgen->addCurrentFileConfig(%node.array)');
+			$set->addMacro('page', '$currentPage->setProperty(%node.word, %node.array)');
 			$macroLink = 'echo %escape(%modify($webgen->createRelativeLink(%node.word)))';
 			$set->addMacro('link', $macroLink);
 			$set->addMacro('href', NULL, NULL, ' ?> href="<?php ' . $macroLink . ' ?>"<?php ');
