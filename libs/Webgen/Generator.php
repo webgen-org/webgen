@@ -743,8 +743,7 @@
 
 		private function shortPath($filepath, $rootDirectory)
 		{
-			$rootDirectory = rtrim($rootDirectory, '/') . '/';
-			return substr($filepath, strlen($rootDirectory));
+			return Helpers::shortPath($filepath, $rootDirectory);
 		}
 
 

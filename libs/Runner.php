@@ -34,6 +34,9 @@
 
 		private $config;
 
+		/** @var array */
+		private $deferredFiles = array();
+
 
 		public function __construct(ILogger $logger)
 		{
@@ -47,6 +50,7 @@
 					'copy' => FALSE, // copy another (images, JS, CSS) files into output directory
 					'libsDir' => 'libs', // name of libs directory, handled by RobotLoader
 					'composerFile' => 'composer.json',
+					'deferredFiles' => array(),
 				),
 
 				'output' => array(
@@ -133,8 +137,10 @@
 				$generator->prepare(!$config['output']['onedir'], $config['output']['purge']);
 
 				// Scanning & generating
+				$this->deferredFiles = array();
 				$this->log("Scanning...");
 				$this->generate($generator, $finder);
+				$this->generateDefferedFiles($generator);
 
 				// Save datetime of build
 				if ($config['output']['lastBuildInfo']) {
@@ -172,8 +178,34 @@
 					$this->log("[ignored] $path");
 					continue;
 				}
+
+				if ($this->isDefferedFile($file)) {
+					$shortPath = Helpers::shortPath($path, $this->inputDirectory);
+					$this->deferredFiles[$shortPath] = $file;
+					continue;
+				}
+
 				$this->log($path);
 				$generator->generate($path, $file, $webgenHelper);
+			}
+		}
+
+
+		protected function generateDefferedFiles(Generator $generator)
+		{
+			$webgenHelper = new \Webgen\Webgen($generator);
+			$config = $this->getConfig();
+
+			if (isset($config['input']['deferredFiles']) && is_array($config['input']['deferredFiles'])) {
+				foreach ($config['input']['deferredFiles'] as $path) {
+					if (!isset($this->deferredFiles[$path])) {
+						continue;
+					}
+
+					$this->log("[deferred] $path");
+					$file = $this->deferredFiles[$path];
+					$generator->generate((string) $file, $file, $webgenHelper);
+				}
 			}
 		}
 
@@ -214,6 +246,19 @@
 		protected function log($msg)
 		{
 			$this->logger->log($msg);
+		}
+
+
+		protected function isDefferedFile($path)
+		{
+			$config = $this->getConfig();
+
+			if (isset($config['input']['deferredFiles']) && is_array($config['input']['deferredFiles'])) {
+				$shortPath = Helpers::shortPath($path, $this->inputDirectory);
+				return in_array($shortPath, $config['input']['deferredFiles'], TRUE);
+			}
+
+			return FALSE;
 		}
 
 

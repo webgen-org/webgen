@@ -8,6 +8,7 @@
 	require __DIR__ . '/Nette/nette.min.php';
 	require __DIR__ . '/Texy/texy.min.php';
 	require __DIR__ . '/FSHL/loader.php';
+	require __DIR__ . '/Webgen/Helpers.php';
 	require __DIR__ . '/Webgen/Page.php';
 	require __DIR__ . '/Webgen/Pages.php';
 	require __DIR__ . '/Webgen/FakePresenter.php';
