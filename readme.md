@@ -3,6 +3,8 @@ Webgen 2.1
 
 Simple PHP CLI generator of static web sites.
 
+<a href="https://www.patreon.com/bePatron?u=9680759"><img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patron!" height="35"></a>
+
 
 Features
 --------
