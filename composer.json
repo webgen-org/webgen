@@ -1,0 +1,15 @@
+{
+	"name": "webgen/webgen",
+	"type": "library",
+	"description": "Static site generator written in PHP.",
+	"license": "BSD-3-Clause",
+	"authors": [
+		{
+			"name": "Jan Pecha",
+			"homepage": "https://www.janpecha.cz/"
+		}
+	],
+	"require": {
+		"php": ">=5.6.0"
+	}
+}
