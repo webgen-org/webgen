@@ -30,12 +30,12 @@
 		/**
 		 * User handler for code block
 		 *
-		 * @param TexyHandlerInvocation  handler invocation
+		 * @param Texy\HandlerInvocation  handler invocation
 		 * @param string  block type
 		 * @param string  text to highlight
 		 * @param string  language
-		 * @param TexyModifier modifier
-		 * @return TexyHtml
+		 * @param Texy\Modifier modifier
+		 * @return Texy\HtmlElement
 		 */
 		public function blockHandler($invocation, $blocktype, $content, $lang, $modifier)
 		{
@@ -50,11 +50,11 @@
 			}
 
 			$texy = $invocation->getTexy();
-			$content = \Texy::outdent($content);
+			$content = \Texy\Texy::outdent($content);
 			$content = $this->highlight($content, $lang, $lexer);
-			$content = $texy->protect($content, \Texy::CONTENT_BLOCK);
+			$content = $texy->protect($content, \Texy\Texy::CONTENT_BLOCK);
 
-			$elPre = \TexyHtml::el('pre');
+			$elPre = \Texy\HtmlElement::el('pre');
 			if ($modifier) $modifier->decorate($texy, $elPre);
 			$elPre->attrs['class'] = strtolower($lang);
 
@@ -68,10 +68,10 @@
 		/**
 		 * Pattern handler for PHP & JavaScript block syntaxes
 		 *
-		 * @param TexyBlockParser
+		 * @param Texy\BlockParser
 		 * @param array      regexp matches
 		 * @param string     pattern name
-		 * @return TexyHtml|string|FALSE
+		 * @return Texy\HtmlElement|string|FALSE
 		 */
 		public function codeBlockHandler($parser, $matches, $name)
 		{
@@ -85,9 +85,9 @@
 
 			$texy = $parser->getTexy();
 			$content = $this->highlight($content, $lang, $lexer);
-			$content = $texy->protect($content, \Texy::CONTENT_BLOCK);
+			$content = $texy->protect($content, \Texy\Texy::CONTENT_BLOCK);
 
-			$elPre = \TexyHtml::el('pre');
+			$elPre = \Texy\HtmlElement::el('pre');
 			$elPre->attrs['class'] = strtolower($lang);
 
 			$elCode = $elPre->create('code', $content);

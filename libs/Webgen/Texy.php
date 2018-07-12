@@ -7,7 +7,7 @@
 
 	namespace Webgen;
 
-	class Texy extends \Texy
+	class Texy extends \Texy\Texy
 	{
 		public function __construct($baseDir)
 		{

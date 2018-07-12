@@ -378,11 +378,11 @@
 
 
 		/**
-		 * @param TexyHandlerInvocation  handler invocation
+		 * @param Texy\HandlerInvocation  handler invocation
 		 * @param string  command
 		 * @param array   arguments
 		 * @param string  arguments in raw format
-		 * @return TexyHtml|string|FALSE
+		 * @return Texy\HtmlElement|string|FALSE
 		 */
 		public function scriptHandler($invocation, $cmd, $args, $raw)
 		{
@@ -520,10 +520,10 @@
 
 
 		/**
-		 * @param  TexyHandlerInvocation  handler invocation
-		 * @param  TexyImage
-		 * @param  TexyLink|NULL
-		 * @return TexyHtml|string|FALSE
+		 * @param  Texy\HandlerInvocation  handler invocation
+		 * @param  Texy\Image
+		 * @param  Texy\Link|NULL
+		 * @return Texy\HtmlElement|string|FALSE
 		 */
 		public function imageHandler($invocation, $image, $link)
 		{
@@ -539,7 +539,7 @@
 
 
 		/**
-		 * @param  TexyHandlerInvocation  handler invocation
+		 * @param  Texy\HandlerInvocation  handler invocation
 		 * @param  string
 		 * @param  string
 		 * @param  TexyModifier
@@ -555,7 +555,7 @@
 
 
 		/**
-		 * @param  TexyHandlerInvocation  handler invocation
+		 * @param  Texy\HandlerInvocation  handler invocation
 		 * @param  TexyLink
 		 * @param  string
 		 * @return TexyHtml|string|FALSE
@@ -569,12 +569,12 @@
 
 
 		/**
-		 * @param  TexyHandlerInvocation  handler invocation
-		 * @param  TexyImage
-		 * @param  TexyLink|NULL
+		 * @param  Texy\HandlerInvocation  handler invocation
+		 * @param  Texy\Image
+		 * @param  Texy\Link|NULL
 		 * @param  string
-		 * @param  TexyModifier
-		 * @return TexyHtml|string|FALSE
+		 * @param  Texy\Modifier
+		 * @return Texy\HtmlElement|string|FALSE
 		 */
 		public function figureHandler($invocation, $image, $link, $content, $modifier)
 		{
@@ -608,7 +608,7 @@
 
 
 		/**
-		 * @param  TexyImage
+		 * @param  Texy\Image
 		 * @return bool
 		 */
 		protected function texyImageUrl($image)
@@ -839,7 +839,7 @@
 
 
 
-		private function solveTexyFigure($invocation, \TexyImage $image, $link, $content, $mod)
+		private function solveTexyFigure($invocation, \Texy\Image $image, $link, $content, $mod)
 		{
 			$tx = $this->currentTexy;
 
