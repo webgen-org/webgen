@@ -253,8 +253,9 @@
 		{
 			echo <<<XX
 
-Webgen 2.1.0-dev
-----------------
+Webgen
+------
+
 Usage:
 	php -f webgen.php -- --run
 
