@@ -8,8 +8,10 @@
 	namespace Webgen;
 	use Nette;
 
-	class CliParser extends Nette\Object
+	class CliParser
 	{
+		use Nette\SmartObject;
+
 		/** @var string */
 		public $timezone = 'Europe/Prague';
 
@@ -134,13 +136,13 @@
 					// create cache dir
 					if (!is_dir($cacheDir) && !@mkdir($cacheDir, 0777, TRUE)) {
 						\Cli\Cli::error('Error: Create cache dir failed');
-						$robotLoader->setCacheStorage(new \Nette\Caching\Storages\MemoryStorage);
+						$robotLoader->setTempDirectory(sys_get_temp_dir() . '/robot-loader.' . \Nette\Utils\Random::generate(10));
 					} else {
-						$robotLoader->setCacheStorage(new \Nette\Caching\Storages\FileStorage($cacheDir));
+						$robotLoader->setTempDirectory($cacheDir);
 					}
 				} else {
 					$this->logger->log('No cache dir for RobotLoader');
-					$robotLoader->setCacheStorage(new \Nette\Caching\Storages\MemoryStorage);
+					$robotLoader->setTempDirectory(sys_get_temp_dir() . '/robot-loader.' . \Nette\Utils\Random::generate(10));
 				}
 
 				$robotLoader->register();
@@ -187,7 +189,7 @@
 				return array();
 			}
 
-			$config = \Nette\Utils\Neon::decode($config);
+			$config = \Nette\Neon\Neon::decode($config);
 
 			if (!is_array($config) && !is_null($config)) {
 				$this->logger->log('...config file has wrong format');

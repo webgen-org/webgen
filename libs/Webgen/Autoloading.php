@@ -9,8 +9,10 @@
 
 	use Nette\Utils;
 
-	class Autoloading extends \Nette\Object
+	class Autoloading
 	{
+		use \Nette\SmartObject;
+
 		private $composerFile;
 
 		private $libsDir;
@@ -54,7 +56,7 @@
 				foreach ($files as $file) {
 					if (file_exists($file)) {
 						\Cli\Cli::log($file);
-						Utils\LimitedScope::load($file);
+						LimitedScope::load($file);
 					} else {
 						\Cli\Cli::log("[not found] $file");
 					}
@@ -75,7 +77,7 @@
 			}
 
 			$loader = new \Nette\Loaders\RobotLoader;
-			$loader->autoRebuild = TRUE;
+			$loader->setAutoRefresh(TRUE);
 			$loader->addDirectory($this->libsDir);
 			return $loader;
 		}

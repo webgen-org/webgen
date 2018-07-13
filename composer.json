@@ -12,7 +12,13 @@
 	"require": {
 		"php": ">=5.6.0",
 		"kukulich/fshl": "^2.1",
-		"texy/texy": "^2.9"
+		"texy/texy": "^2.9",
+		"nette/utils": "^2.5",
+		"nette/neon": "^2.4",
+		"latte/latte": "^2.4",
+		"czproject/path-helper": "^4.1",
+		"nette/finder": "^2.4",
+		"nette/robot-loader": "^3.0"
 	},
 	"autoload": {
 		"classmap": ["libs/"]

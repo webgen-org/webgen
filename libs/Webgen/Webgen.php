@@ -7,8 +7,16 @@
 
 	namespace Webgen;
 
-	class Webgen extends \Nette\Object
+	/**
+	 * @property string $sourceDirectory
+	 * @property string $currentFile
+	 * @property string $currentPath
+	 * @property int $currentIteration
+	 */
+	class Webgen
 	{
+		use \Nette\SmartObject;
+
 		private $generator;
 
 

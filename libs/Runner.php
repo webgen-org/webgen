@@ -9,8 +9,10 @@
 	use Nette;
 	use Nette\Utils\Finder as NFinder;
 
-	class Runner extends Nette\Object
+	class Runner
 	{
+		use Nette\SmartObject;
+
 		/** @var string */
 		public $inputDirectory;
 

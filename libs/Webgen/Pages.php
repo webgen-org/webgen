@@ -8,8 +8,10 @@
 	namespace Webgen;
 	use Nette;
 
-	class Pages extends Nette\Object
+	class Pages
 	{
+		use \Nette\SmartObject;
+
 		/** @var Page[] */
 		private $pages = array();
 

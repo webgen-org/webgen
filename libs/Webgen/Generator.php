@@ -7,9 +7,12 @@
 
 	namespace Webgen;
 	use Nette;
+	use Nette\Utils\Finder as NFinder;
 
-	class Generator extends \Nette\Object
+	class Generator
 	{
+		use \Nette\SmartObject;
+
 		/** @var array */
 		public $config = NULL;
 
@@ -25,8 +28,11 @@
 		/** @var string */
 		public $outputFileDirectory;
 
-		/** @var  FileTemplate */
+		/** @var  Template */
 		protected $template;
+
+		/** @var  \Latte\Engine */
+		protected $latte;
 
 		/** @var  string|NULL */
 		private $currentFile;
@@ -55,12 +61,6 @@
 		/** @var  TexyFilter */
 		private $currentTexy;
 
-		/** @var  \Nette\Caching\IStorage */
-		private $cacheStorage;
-
-		/** @var  \Webgen\FakePresenter @internal */
-		private $presenter;
-
 		/** @var  \Webgen\Highlighter */
 		private $highlighter;
 
@@ -68,11 +68,8 @@
 		private $pages;
 
 
-		public function __construct(\Nette\Caching\IStorage $cacheStorage = NULL)
+		public function __construct()
 		{
-			$this->cacheStorage = isset($cacheStorage) ? $cacheStorage : (new \Nette\Caching\Storages\MemoryStorage);
-			// $this->cacheStorage = new \Nette\Caching\Storages\FileStorage(__DIR__ . '/cache');
-			$this->presenter = new \Webgen\FakePresenter($this);
 			$this->highlighter = new \Webgen\Highlighter;
 			$this->pages = new \Webgen\Pages;
 		}
@@ -114,7 +111,7 @@
 
 				\Cli\Cli::log("Copy into output directory:");
 
-				foreach (Finder::find($mask)->exclude('*.latte', '*.texy')->from($this->inputDirectory) as $file) {
+				foreach (NFinder::find($mask)->exclude('*.latte', '*.texy')->from($this->inputDirectory) as $file) {
 					$dest = $this->outputFileDirectory . '/' . $this->shortPath((string) $file, $this->inputDirectory);
 
 					if (!$file->isReadable()) {
@@ -283,16 +280,16 @@
 			);
 			$this->currentIteration = 1;
 			$this->currentFileInfo = $fileInfo;
-			$this->template = $template = $this->createTemplate();
+			$this->latte = $latte = $this->createLatte();
 			$texy = new \Webgen\Texy($this->config['variables']['baseDir']);
 			$texy->headingModule->top = 2;
 			$this->configureTexy($texy);
 
 			$filters = array();
 
-			$template->setFile($filePath);
-			$template->webgen = $webgenHelper;
-			$template->_presenter = $template->_control = $this->presenter;
+			$this->template = $template = new Template($filePath, file_get_contents($filePath), array(
+				'webgen' => $webgenHelper,
+			));
 
 			// set current file
 			$this->currentFile = $this->shortPath($filePath, $this->inputDirectory);
@@ -303,7 +300,7 @@
 			if($fileExtension === 'texy')
 			{
 				$texyFilter = new TexyFilter($this->config['variables']['baseDir']);
-				$texyFilter->addHandler('script', callback($this, 'scriptHandler'));
+				$texyFilter->addHandler('script', array($this, 'scriptHandler'));
 				$this->configureTexy($texyFilter);
 
 				$filters[] = $texyFilter;
@@ -326,27 +323,27 @@
 			// Set template variables
 			if(isset($this->config['variables']))
 			{
-				foreach($this->config['variables'] as $name => $value)
-				{
-					$template->$name = $value;
-				}
+				$template->addParameters($this->config['variables']);
 			}
 
 			// Set default variables
-			$template->productionMode = $this->config['output']['productionMode'];
+			$template->addParameters(array(
+				'productionMode' => $this->config['output']['productionMode'],
+			));
 
 			// Register Texy! Helper
-			$template->registerHelper('texy', array($texy, 'process'));
+			$latte->addFilter('texy', function (\Latte\Runtime\FilterInfo $info, $s, $singleLine = false) use ($texy) {
+				return new \Latte\Runtime\Html($texy->process($s, $singleLine));
+			});
 
 			// Render to file
-			$content = $template->getSource();
+			$content = $template->getContent();
 
 			foreach($filters as $filter)
 			{
 				$content = $filter($content);
 			}
 
-			#$template->setSource($content);
 			$this->repeatGenerating = FALSE;
 
 			do {
@@ -358,13 +355,14 @@
 
 				$this->currentOutputFile = NULL;
 				$tpl = clone $template;
-				$tpl->currentPage = $this->currentPage;
-				$tpl->setSource($content);
-				$content = $tpl->__toString(TRUE); // render to var
+				$tpl->setParameter('currentPage', $this->currentPage);
+				$tpl->setContent($content);
+				$latte->getLoader()->setTemplate($tpl);
+				$output = $latte->renderToString($tpl->getPath(), $tpl->getParameters()); // render to var
 
 				if ($this->currentFileConfig['active']) {
 					$fileName = $this->getCurrentOutputFilePath(); // format output filepath
-					$this->saveFile($fileName, $content); // save into file
+					$this->saveFile($fileName, $output); // save into file
 					$this->pages->addPage($this->getCurrentOutputFile(), $this->currentPage->getProperties());
 
 				} else {
@@ -392,13 +390,13 @@
 
 				if(isset($args[0]))
 				{
-					$this->template->$var = $args[0];
+					$this->template->setParameter($var, $args[0]);
 
 					return '';
 				}
 				else
 				{
-					return (string)$this->template->$var;
+					return (string)$this->template->getParameter($var);
 				}
 			}
 			elseif($cmd[0] === '$') {
@@ -413,12 +411,12 @@
 					$value = trim(substr($cmd, $pos + 1));
 
 					if ($var !== '') {
-						$this->template->$var = $value;
+						$this->template->setParameter($var, $value);
 						return '';
 					}
 				} else {
 					$var = trim(substr($cmd, 1));
-					return (string) $this->template->$var;
+					return (string) $this->template->getParameter($var);
 				}
 			}
 			elseif($cmd === 'webgen')
@@ -647,7 +645,7 @@
 			@mkdir($directory, 0777, TRUE); // @ - directory may already exist
 
 			\Cli\Cli::log("Purge:\n$directory");
-			foreach (Finder::find($mask)->from($directory)->childFirst() as $entry) {
+			foreach (NFinder::find($mask)->from($directory)->childFirst() as $entry) {
 				$res = TRUE;
 				if (substr($entry->getBasename(), 0, 1) === '.') { // . or .. or .gitignore (hidden files)
 					// ignore
@@ -669,47 +667,37 @@
 		}
 
 
-
-		protected function createTemplate()
+		protected function createLatte()
 		{
-			$template = new FileTemplate;
-			$template->setCacheStorage($this->cacheStorage);
-
-			// Register Latte
-			$template = $this->templateRegisterLatte($template);
-
-			// Register helpers
-			$template->registerHelperLoader('\Nette\Templating\Helpers::loader');
-			$template->registerHelper('highlighter', array($this->highlighter, 'highlight'));
-
-			return $template;
-		}
-
-
-
-		protected function templateRegisterLatte($template)
-		{
-			$latte = new \Nette\Latte\Engine;
+			$latte = new \Latte\Engine;
+			$latte->setLoader(new TemplateLoader);
 			$xhtml = isset($this->config['output']['xhtml']) && $this->config['output']['xhtml'];
-
-			if(!$xhtml)
-			{
-				$latte->getCompiler()->defaultContentType = \Nette\Latte\Compiler::CONTENT_HTML;
-			}
-
+			$latte->setContentType($xhtml ? \Latte\Engine::CONTENT_XHTML : \Latte\Engine::CONTENT_HTML);
 			\Nette\Utils\Html::$xhtml = $xhtml;
 
+			// own filters
+			$latte->addFilter('highlighter', function (\Latte\Runtime\FilterInfo $info, $s, $lang = 'html') {
+				return new \Latte\Runtime\Html($this->highlighter->highlight($s, $lang));
+			});
+
+			LatteMacros::install($latte->getCompiler());
+
 			// own macros
-			$set = new Nette\Latte\Macros\MacroSet($latte->compiler);
+			$set = new \Latte\Macros\MacroSet($latte->getCompiler());
 			$set->addMacro('webgen', '$webgen->addCurrentFileConfig(%node.array)');
 			$set->addMacro('page', '$currentPage->setProperty(%node.word, %node.array)');
 			$macroLink = 'echo %escape(%modify($webgen->createRelativeLink(%node.word)))';
 			$set->addMacro('link', $macroLink);
 			$set->addMacro('href', NULL, NULL, ' ?> href="<?php ' . $macroLink . ' ?>"<?php ');
 			$set->addMacro('src', NULL, NULL, ' ?> src="<?php ' . $macroLink . ' ?>"<?php ');
-			$set->addMacro('image', NULL, NULL, callback($this, 'latteImageMacro'));
+			$set->addMacro('image', NULL, NULL, array($this, 'latteImageMacro'));
 
-			return $template->registerFilter($latte);
+			// own providers
+			$latte->addProvider('webgenLayoutProvider', function () {
+				return is_string($this->layoutPath) ? $this->layoutPath : FALSE;
+			});
+
+			return $latte;
 		}
 
 
@@ -881,10 +869,10 @@
 
 		private function configureTexy($texy)
 		{
-			$texy->addHandler('phrase', callback($this, 'phraseHandler'));
-			$texy->addHandler('linkReference', callback($this, 'linkReferenceHandler'));
-			$texy->addHandler('figure', callback($this, 'figureHandler'));
-			$texy->addHandler('image', callback($this, 'imageHandler'));
+			$texy->addHandler('phrase', array($this, 'phraseHandler'));
+			$texy->addHandler('linkReference', array($this, 'linkReferenceHandler'));
+			$texy->addHandler('figure', array($this, 'figureHandler'));
+			$texy->addHandler('image', array($this, 'imageHandler'));
 
 			if ($this->config['extensions']['syntaxHighlighter']) {
 				$texy->addHandler('block', array($this->highlighter, 'blockHandler'));

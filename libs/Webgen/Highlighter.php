@@ -9,8 +9,11 @@
 	use Nette;
 	use FSHL;
 
-	class Highlighter extends Nette\Object
+	class Highlighter
 	{
+		use \Nette\SmartObject;
+
+
 		public function highlight($s, $lang = 'html', $lexer = NULL)
 		{
 			if ($lexer === NULL) {
