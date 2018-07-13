@@ -130,7 +130,7 @@
 			if (isset($this->properties[$name])) {
 				return $this->properties[$name];
 			}
-			throw new \Exception("Undefined property '$name'.");
+			throw new \Exception("Undefined property '$name' for page {$this->path}.");
 		}
 
 
