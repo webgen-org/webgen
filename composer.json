@@ -20,6 +20,7 @@
 		"nette/finder": "^2.4",
 		"nette/robot-loader": "^3.0"
 	},
+	"bin": ["webgen"],
 	"autoload": {
 		"classmap": ["libs/"]
 	}
