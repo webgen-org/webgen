@@ -10,8 +10,8 @@
 	if (is_file(__DIR__ . '/vendor/autoload.php')) { // standalone tool
 		$vendorDirectory = __DIR__ . '/vendor/';
 
-	} elseif (is_file(__DIR__ . '/../../vendor/autoload.php')) { // package in vendor
-		$vendorDirectory = __DIR__ . '/../../vendor/';
+	} elseif (is_file(__DIR__ . '/../../../vendor/autoload.php')) { // package in vendor
+		$vendorDirectory = __DIR__ . '/../../';
 	}
 
 	if ($vendorDirectory === NULL) {
