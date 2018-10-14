@@ -1,21 +1,18 @@
-Webgen 2.1
-==========
+# Webgen
 
 Simple PHP CLI generator of static web sites.
 
 <a href="https://www.patreon.com/bePatron?u=9680759"><img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patron!" height="35"></a>
 
 
-Features
---------
+## Features
 
 * [Texy!](http://texy.info/) support
 * [Latte templates](http://doc.nette.org/en/templating#toc-latte) support
 * incremental mode
 
 
-Usage
------
+## Usage
 
 ### Non-incremental mode
 
@@ -88,8 +85,7 @@ output:
 ***Note:*** *Webgen ignores files with ```@``` on start of filename.*
 
 
-Templating
-----------
+## Templating
 
 **Texy in Latte template**
 
@@ -172,8 +168,7 @@ In mask ```**``` means *everything*, ```*``` means *everything <b>except</b> ```
 ```
 
 
-Configuration
--------------
+## Configuration
 
 Configuration is stored in file named [```config.neon```](examples/basic/config.neon). [NEON](http://ne-on.org/) is format very similar to YAML, see http://ne-on.org/.
 
@@ -272,14 +267,12 @@ output:
 ```
 
 
-Pagination
-----------
+## Pagination
 
 See example [pagination-repeated-generating](examples/pagination-repeated-generating).
 
 
-Who uses Webgen?
-----------------
+## Who uses Webgen?
 
 * http://knihovna.sluzatky.cz/
 * http://maturitni-ples.iunas.cz/
