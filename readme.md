@@ -8,8 +8,8 @@ Simple PHP CLI generator of static web sites.
 
 ## Features
 
-* [Texy!](http://texy.info/) support
-* [Latte templates](http://doc.nette.org/en/templating#toc-latte) support
+* [Texy!](https://texy.info/) support
+* [Latte templates](https://latte.nette.org/) support
 * incremental mode
 
 
@@ -97,7 +97,7 @@ This is **Texy** snippet.
 
 
 {texy}
-This is "Texy":http://texy.info snippet too.
+This is "Texy":https://texy.info snippet too.
 {/texy}
 ```
 
@@ -171,7 +171,7 @@ In mask ```**``` means *everything*, ```*``` means *everything <b>except</b> ```
 
 ## Configuration
 
-Configuration is stored in file named [```config.neon```](examples/basic/config.neon). [NEON](http://ne-on.org/) is format very similar to YAML, see http://ne-on.org/.
+Configuration is stored in file named [```config.neon```](examples/basic/config.neon). [NEON](https://ne-on.org/) is format very similar to YAML, see https://ne-on.org/.
 
 **Change name of source or output directory**
 
@@ -277,16 +277,15 @@ See example [pagination-repeated-generating](examples/pagination-repeated-genera
 
 * http://knihovna.sluzatky.cz/
 * http://maturitni-ples.iunas.cz/
-* http://janpecha.iunas.cz/
 * http://via.iunas.cz/
 
 Articles:
-* http://janpecha.blogista.cz/webgen-2-1 (in Czech)
-* http://janpecha.blogista.cz/webgen (in Czech)
+* https://www.janpecha.cz/blog/webgen-2-1/ (in Czech)
+* https://www.janpecha.cz/blog/webgen/ (in Czech)
 
 
 ------------------------------
 
 License: [New BSD License](license.txt)
-<br>Author: Jan Pecha, http://janpecha.iunas.cz/webgen
+<br>Author: Jan Pecha, https://www.janpecha.cz/
 
