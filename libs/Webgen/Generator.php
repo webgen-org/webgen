@@ -76,7 +76,7 @@
 
 
 
-		public function prepare($versioned, $purge = FALSE)
+		public function prepare($purge = FALSE)
 		{
 			if($this->config === NULL)
 			{
@@ -85,9 +85,6 @@
 
 			// Make output directory
 			$this->outputFileDirectory = $this->outputDirectory;
-			if ($versioned) {
-				$this->outputFileDirectory .= '/' . date('Y-m-d_H-i-s');
-			}
 
 			if ($purge) {
 				$this->purgeDir($this->outputFileDirectory, $purge !== TRUE ? $purge : NULL); // purges directory, ignores hidden files (.gitignore, .htaccess)
@@ -895,48 +892,6 @@
 					'scriptBlockSyntax'
 				);
 			}
-		}
-
-
-
-		/**
-		 * @param	string
-		 * @return	\DateTime|FALSE
-		 */
-		public static function getLastBuildDate($filePath)
-		{
-			$lastBuild = @file_get_contents($filePath);
-
-			if($lastBuild === FALSE)
-			{
-				//throw new \Exception('File error - load last build date'); - poprve nemusi existovat!!!
-				return FALSE;
-			}
-
-			$date = FALSE;
-
-			try
-			{
-				$date = new \DateTime($lastBuild);
-			}
-			catch(\Exception $e)
-			{
-				return FALSE;
-			}
-
-			return $date;
-		}
-
-
-
-		/**
-		 * @param	string
-		 * @param	\DateTime
-		 * @return	void
-		 */
-		public static function setLastBuildDate($filePath, \DateTime $datetime)
-		{
-			file_put_contents($filePath, $datetime->format(\DateTime::ISO8601));
 		}
 
 

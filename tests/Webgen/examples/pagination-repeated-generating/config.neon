@@ -7,5 +7,4 @@ input:
 
 output:
 	purge: yes
-	# lastBuildInfo: off
 

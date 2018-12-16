@@ -10,75 +10,16 @@ Simple PHP CLI generator of static web sites.
 
 * [Texy!](https://texy.info/) support
 * [Latte templates](https://latte.nette.org/) support
-* incremental mode
 
 
 ## Usage
 
-### Non-incremental mode
-
-```
-$ cd examples/basic
-$ php -f ../../webgen.php -- --run --onedir
-$ cd output
-$ ls
-articles  index.html
-```
-
-
-### Incremental mode
-
-```
-$ cd my-web-local-directory
-$ php -f /path/to/webgen.php -- --run
-# or 'webgen --run' (see file bin/readme.md for details)
-```
-
-For example:
-
 ```
 $ cd examples/basic
 $ php -f ../../webgen.php -- --run
-```
-
-Webgen creates subdirectories (eg. `2013-12-12_14:15:16`) in output directory and generates only files changed from date of last generating. You can use parameter ```--force```, then Webgen will generating all files.
-
-After first generating:
-
-```
 $ cd output
-$ ls
-2013-12-12_14:15:16
-
-$ cd 2013-12-12_14:15:16
 $ ls
 articles  index.html
-```
-
-After editing of ```index.html```:
-
-```
-$ cd ../../input
-$ touch index.html
-$ cd ..
-$ php -f ../../webgen.php -- --run
-
-$ cd output
-$ ls
-2013-12-12_14:15:16  2013-12-12_14:16:34
-
-$ cd 2013-12-12_14:16:34
-$ ls
-index.html
-```
-
-You can use parameter ```--onedir``` for disabling of incremental mode. This parameter ignores date of last generating too (generates all files like parameter ```--force```).
-
-**Note:** you can use config option ```output.onedir``` in your config file (see [config.neon](examples/basic/config.neon)) instead of ```--onedir``` parameter.
-
-```
-output:
-    onedir: yes
 ```
 
 ------------------------------
@@ -254,17 +195,6 @@ File-specific change:
 
 ## changes output filename (ignores 'ext' option)
 {webgen filename => my-first-page.html}
-```
-
-**Disable/enable generating of ```lastBuild.dat``` file**
-
-```
-output:
-    lastBuildInfo: off
-    # values:
-    #    off    - disabled
-    #    on     - enabled
-    #    NULL   - auto detected by mode
 ```
 
 

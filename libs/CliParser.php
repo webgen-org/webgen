@@ -178,8 +178,6 @@
 			return array(
 				'directory' => $dir,
 				'configFile' => "$dir/" . (isset($params['config']) ? $params['config'] : 'config.neon'),
-				'oneDirectoryMode' => isset($params['onedir']),
-				'force' => isset($params['force']),
 				'productionMode' => isset($params['productionMode']) || isset($params['production-mode']) || isset($params['production']),
 			);
 		}
@@ -227,20 +225,8 @@
 			$config = $this->loadConfigFile($configFile);
 
 			// Settings
-			if ($parameters['oneDirectoryMode']) {
-				$config['output']['onedir'] = TRUE;
-			}
-
 			if ($parameters['productionMode']) {
 				$config['output']['productionMode'] = TRUE;
-			}
-
-			if (isset($config['output']) && array_key_exists('lastBuildInfo', $config['output']) && $config['output']['lastBuildInfo'] === NULL /* auto */) {
-				if (isset($config['output']['onedir'])) {
-					$config['output']['lastBuildInfo'] = !$config['output']['onedir'];
-				} else {
-					$config['output']['lastBuildInfo'] = TRUE;
-				}
 			}
 
 			$this->runner->addConfig($config);
@@ -248,7 +234,6 @@
 			$this->runner->inputDirectory = \Cli\Cli::formatPath($config['input']['dir'], $dir);
 			$this->runner->outputDirectory = \Cli\Cli::formatPath($config['output']['dir'], $dir);
 			$this->runner->layoutPath = \Cli\Cli::formatPath($config['input']['layout'], $dir);
-			$this->runner->forceMode = $parameters['force'];
 			$this->runner->productionMode = $config['output']['productionMode'];
 			$this->runner->currentDirectory = $this->currentDirectory;
 
@@ -275,10 +260,6 @@ Parameters:
 	--config        name of config file
 	--dir           project directory (current working directory by default)
 	--production    enables production mode
-
-	[incremental mode]
-	--force         regenerates all files (not only changed)
-	--onedir        disables incremental mode
 
 
 XX;

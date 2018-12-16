@@ -23,9 +23,6 @@
 		public $layoutPath;
 
 		/** @var bool */
-		public $forceMode = FALSE;
-
-		/** @var bool */
 		public $productionMode = FALSE;
 
 		/** @var string @internal */
@@ -60,8 +57,6 @@
 					'ext' => 'html',	// output file extension
 					'xhtml' => FALSE,	// enables or disables XHTML output
 					'purge' => FALSE,   // purge output directory?
-					'onedir' => TRUE,   // disables incremental generating
-					'lastBuildInfo' => NULL, // generate last build info file?
 					'cacheDir' => NULL,
 					'productionMode' => FALSE,
 				),
@@ -136,19 +131,13 @@
 
 				// Make output directory
 				$this->log("Preparing...");
-				$generator->prepare(!$config['output']['onedir'], $config['output']['purge']);
+				$generator->prepare($config['output']['purge']);
 
 				// Scanning & generating
 				$this->deferredFiles = array();
 				$this->log("Scanning...");
 				$this->generate($generator, $finder);
 				$this->generateDefferedFiles($generator);
-
-				// Save datetime of build
-				if ($config['output']['lastBuildInfo']) {
-					$this->log("Saving last build infos...");
-					\WebGen\Generator::setLastBuildDate($this->currentDirectory . '/lastBuild.dat', new DateTime);
-				}
 
 				$this->logger->success("Done.\n");
 				return 0;
@@ -228,19 +217,6 @@
 		{
 			$config = $this->getConfig();
 			$finder = NFinder::findFiles('*.texy', '*.latte');
-
-			if (!$this->forceMode && !$config['output']['onedir']) {
-				$lastBuildDate = \Webgen\Generator::getLastBuildDate($this->currentDirectory . '/lastBuild.dat');
-
-				if ($lastBuildDate !== FALSE) {
-					// kdyz nebyl od posledne zmenen layout => muzeme generovat jenom zmenene soubory, jinak vsechny
-					if (filemtime($this->layoutPath) < $lastBuildDate->getTimestamp()) {	// TODO: nespolehat se na timestamp
-						$this->log('Mode: incremental');
-						$finder = $finder->date('>', $lastBuildDate);
-					}
-				}
-			}
-
 			return $finder;
 		}
 
