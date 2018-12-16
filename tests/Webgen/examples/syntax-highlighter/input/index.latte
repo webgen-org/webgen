@@ -26,7 +26,7 @@ echo "Hello!";
 Don't use <code>&lt;?php</code>:
 <pre>
 {block|highlighter:php}
-<?php
+{='<'}?php
 echo "Hello!";
 ?>
 {/block}
@@ -35,12 +35,12 @@ echo "Hello!";
 or use:
 
 <pre>
-{!='<'.'?php
+{='<'.'?php
 echo "Hello!"
 if ($var === "webgen") {
 	echo "FSHL";
 }
-'|highlighter:php}
+'|highlighter:php|noescape}
 </pre>
 
 

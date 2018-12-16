@@ -1,5 +1,5 @@
 {
     "require": {
-        "czproject/git-php": "3.0.*"
+        "czproject/arrays": "^1.0"
     }
 }

@@ -18,6 +18,9 @@
 		/** @var ILogger */
 		private $logger;
 
+		/** @var array */
+		private $cliArgs;
+
 		/** @var Runner */
 		private $runner;
 
@@ -28,9 +31,10 @@
 		private $currentDirectory;
 
 
-		public function __construct(ILogger $logger)
+		public function __construct(ILogger $logger, array $cliArgs = NULL)
 		{
 			$this->logger = $logger;
+			$this->cliArgs = $cliArgs !== NULL ? $cliArgs : $_SERVER['argv'];
 		}
 
 
@@ -50,6 +54,9 @@
 		}
 
 
+		/**
+		 * @return int  status code
+		 */
 		public function run(Runner $runner)
 		{
 			if ($this->setup($runner)) {
@@ -57,9 +64,11 @@
 					$this->watch($runner);
 
 				} else {
-					die($runner->run());
+					return $runner->run();
 				}
 			}
+
+			return 0;
 		}
 
 
@@ -155,7 +164,7 @@
 		 */
 		private function loadCliParameters()
 		{
-			$params = \Cli\Cli::parseParams($_SERVER['argv']);
+			$params = \Cli\Cli::parseParams($this->cliArgs);
 
 			if ($params === FALSE || !isset($params['run'])) {
 				return FALSE;

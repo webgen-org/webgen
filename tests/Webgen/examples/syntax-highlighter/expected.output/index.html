@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<style type="text/css">
+	body {
+		font-family: Arial, sans-serif;
+		font-size: 90%;
+		line-height: 1.6em;
+		margin: 0;
+		padding: 0;
+		border-top: 8px solid #333;
+	}
+
+	#wrapper {
+		max-width: 1024px;
+		margin: 0 auto;
+		padding: 1em;
+	}
+
+	h1 {
+		color: #444;
+	}
+
+	hr {
+		border-width: 0;
+		border-top: 1px solid #444;
+	}
+
+	a:link {
+		color: #0044aa;
+	}
+
+	a:visited {
+		color: #00255c;
+	}
+
+	a:hover {
+		color: #d22;
+	}
+	</style>
+	<link rel="stylesheet" type="text/css" href="fshl.css">
+
+	<title>WebGen 2.1 - Example - Syntax highlighter ::  My Example Page</title>
+</head>
+<body>
+	<div id="wrapper">
+
+<h1>WebGen 2.1 - Example - Syntax highlighter</h1>
+
+<a href="texy-highlighter.html">Highlighter in Texy</a>
+
+<h2>PHP</h2>
+<p>First:</p>
+<pre>
+<span class="xlang">&lt;?</span>
+<span class="php-keyword1">echo</span> <span class="php-quote">&quot;Hello!&quot;</span>;
+<span class="xlang">?&gt;</span>
+
+</pre>
+
+<p>Second:</p>
+<pre>
+<span class="php-keyword1">echo</span> <span class="php-quote">&quot;Hello!&quot;</span>;
+
+</pre>
+
+Don't use <code>&lt;?php</code>:
+<pre>
+&amp;lt;?php
+<span class="php-keyword1">echo</span> <span class="php-quote">&quot;Hello!&quot;</span>;
+<span class="xlang">?&gt;</span>
+
+</pre>
+
+or use:
+
+<pre>
+<span class="xlang">&lt;?php</span>
+<span class="php-keyword1">echo</span> <span class="php-quote">&quot;Hello!&quot;</span>
+<span class="php-keyword1">if</span> (<span class="php-var">$var</span> === <span class="php-quote">&quot;webgen&quot;</span>) {
+	<span class="php-keyword1">echo</span> <span class="php-quote">&quot;FSHL&quot;</span>;
+}
+
+</pre>
+
+
+
+<h2>JavaScript</h2>
+<pre>
+<span class="js-out">alert(</span><span class="js-quote">'Hello!'</span><span class="js-out">);
+</span><span class="js-keywords1">if</span><span class="js-out"> (</span><span class="js-keywords1">var</span><span class="js-out"> === </span><span class="js-quote">'webgen'</span><span class="js-out">) {
+	console.log(</span><span class="js-quote">'FSHL!'</span><span class="js-out">);
+}
+</span>
+</pre>
+
+
+<h2>HTML</h2>
+<pre> 
+<span class="html-tag">&lt;h1&gt;</span>Hello!<span class="html-tag">&lt;/h1&gt;</span>
+
+<span class="html-tag">&lt;p&gt;</span>Lorem ipsum dolor sit amet<span class="html-tag">&lt;/p&gt;</span>
+
+</pre>
+
+
+		<hr>
+		Author: <a href="http://janpecha.iunas.cz/">Jan Pecha</a>, 2018
+	</div>
+</body>
+</html>

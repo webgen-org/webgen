@@ -13,15 +13,17 @@
 
 <p>You can use <a href="http://getcomposer.org">Composer</a> too.</p>
 
-{var $repoPath = realpath(dirname($webgen->currentFile) . '/../../.git')}
-<p>Tags in Webgen repository:</p>
+<p>Output of `CzProject\Arrays::flatten()`:</p>
 
-<ul n:if="$repoPath">
-	{var $repo = new Cz\Git\GitRepository($repoPath)}
-	<li n:foreach="$repo->getTags() as $tag">{$tag}</li>
+<ul>
+	{var $items = CzProject\Arrays::flatten([
+		'value 1',
+		'values' => [
+			'value 2-1',
+			'value 2-2',
+			'value 2-3',
+		],
+		'value 3',
+	])}
+	<li n:foreach="$items as $item">{$item}</li>
 </ul>
-
-<p n:if="!$repoPath">Repository not found.</p>
-
-<p n:if="$repoPath">Repository: {$repoPath}</p>
-

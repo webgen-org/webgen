@@ -22,7 +22,7 @@
 
 	$logger = new Webgen\Logger;
 	$runner = new Webgen\Runner($logger);
-	$cli = new Webgen\CliParser($logger);
+	$cli = new Webgen\CliParser($logger, $_SERVER['argv']);
 
 	$cli->prepareEnvironment();
-	$cli->run($runner);
+	die($cli->run($runner));

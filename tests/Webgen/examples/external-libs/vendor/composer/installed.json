@@ -1,0 +1,43 @@
+[
+    {
+        "name": "czproject/arrays",
+        "version": "v1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/czproject/arrays.git",
+            "reference": "ac86daf83cf36ecef1971ddd75c0abf3d43c8ab6"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/czproject/arrays/zipball/ac86daf83cf36ecef1971ddd75c0abf3d43c8ab6",
+            "reference": "ac86daf83cf36ecef1971ddd75c0abf3d43c8ab6",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "nette/tester": "^1.7"
+        },
+        "time": "2016-08-19T18:07:46+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Jan Pecha",
+                "homepage": "https://www.janpecha.cz/"
+            }
+        ],
+        "description": "Array tools library."
+    }
+]

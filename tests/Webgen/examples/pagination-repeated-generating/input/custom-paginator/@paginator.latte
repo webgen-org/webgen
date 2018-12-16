@@ -14,7 +14,7 @@
 	{for $i = 0; $i <= $count; $i++}
 		{var $arr[] = round($quotient * $i) + $paginator->firstPage}
 	{/for}
-	{? sort($arr)}
+	{php sort($arr)}
 	{var $steps = array_values(array_unique($arr))}
 {/if}
 

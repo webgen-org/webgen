@@ -1,0 +1,4 @@
+
+input:
+	deferredFiles:
+		- index.latte

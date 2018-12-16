@@ -23,5 +23,8 @@
 	"bin": ["webgen"],
 	"autoload": {
 		"classmap": ["libs/"]
+	},
+	"require-dev": {
+		"nette/tester": "^2.0"
 	}
 }
