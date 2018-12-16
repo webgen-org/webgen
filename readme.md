@@ -149,22 +149,6 @@ input:
         - *.css
 ```
 
-**Purge output directory before generating (boolean value (`yes`/`no`) or filemask(s))**
-
-```
-output:
-    purge: yes
-```
-
-```
-output:
-    purge:
-        - *.html
-        - *.php
-        - *.js
-        - *.css
-```
-
 **Change default output file extension**
 
 ```

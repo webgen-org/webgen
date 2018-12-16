@@ -5,6 +5,3 @@
 input:
 	copy: *.css
 
-output:
-	purge: yes
-

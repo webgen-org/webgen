@@ -55,7 +55,6 @@
 				'output' => array(
 					'dir' => 'output',	// name of output directory
 					'ext' => 'html',	// output file extension
-					'purge' => FALSE,   // purge output directory?
 					'cacheDir' => NULL,
 					'productionMode' => FALSE,
 				),
@@ -130,7 +129,7 @@
 
 				// Make output directory
 				$this->log("Preparing...");
-				$generator->prepare($config['output']['purge']);
+				$generator->prepare();
 
 				// Scanning & generating
 				$this->deferredFiles = array();

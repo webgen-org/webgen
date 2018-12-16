@@ -5,6 +5,3 @@
 input:
 	copy: yes
 
-output:
-	purge: yes
-

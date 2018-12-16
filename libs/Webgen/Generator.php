@@ -8,6 +8,7 @@
 	namespace Webgen;
 	use Nette;
 	use Nette\Utils\Finder as NFinder;
+	use Nette\Utils\FileSystem;
 
 	class Generator
 	{
@@ -76,7 +77,7 @@
 
 
 
-		public function prepare($purge = FALSE)
+		public function prepare()
 		{
 			if($this->config === NULL)
 			{
@@ -85,12 +86,7 @@
 
 			// Make output directory
 			$this->outputFileDirectory = $this->outputDirectory;
-
-			if ($purge) {
-				$this->purgeDir($this->outputFileDirectory, $purge !== TRUE ? $purge : NULL); // purges directory, ignores hidden files (.gitignore, .htaccess)
-			} else {
-				$this->makeDir($this->outputFileDirectory);
-			}
+			$this->createDir($this->outputFileDirectory); // creates output directory
 
 			$this->processCopy();
 			$this->pages->resetPages();
@@ -637,30 +633,11 @@
 
 
 
-		protected function purgeDir($directory, $mask)
+		protected function createDir($directory)
 		{
-			@mkdir($directory, 0777, TRUE); // @ - directory may already exist
-
-			\Cli\Cli::log("Purge:\n$directory");
-			foreach (NFinder::find($mask)->from($directory)->childFirst() as $entry) {
-				$res = TRUE;
-				if (substr($entry->getBasename(), 0, 1) === '.') { // . or .. or .gitignore (hidden files)
-					// ignore
-					\Cli\Cli::log("[ignored] $entry");
-					continue;
-				} elseif ($entry->isDir()) {
-					$res = @rmdir($entry);
-				} else {
-					$res = @unlink($entry);
-				}
-
-				if (!$res) {
-					\Cli\Cli::log("[skipped] $entry");
-					continue;
-				}
-				\Cli\Cli::log("[removed] $entry");
-			}
-			\Cli\Cli::log(''); // empty line
+			\Cli\Cli::log("Create output directory:\n$directory");
+			FileSystem::delete($directory);
+			FileSystem::createDir($directory);
 		}
 
 
