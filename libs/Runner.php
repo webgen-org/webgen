@@ -55,7 +55,6 @@
 				'output' => array(
 					'dir' => 'output',	// name of output directory
 					'ext' => 'html',	// output file extension
-					'xhtml' => FALSE,	// enables or disables XHTML output
 					'purge' => FALSE,   // purge output directory?
 					'cacheDir' => NULL,
 					'productionMode' => FALSE,

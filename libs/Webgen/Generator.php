@@ -668,9 +668,6 @@
 		{
 			$latte = new \Latte\Engine;
 			$latte->setLoader(new TemplateLoader);
-			$xhtml = isset($this->config['output']['xhtml']) && $this->config['output']['xhtml'];
-			$latte->setContentType($xhtml ? \Latte\Engine::CONTENT_XHTML : \Latte\Engine::CONTENT_HTML);
-			\Nette\Utils\Html::$xhtml = $xhtml;
 
 			// own filters
 			$latte->addFilter('highlighter', function (\Latte\Runtime\FilterInfo $info, $s, $lang = 'html') {

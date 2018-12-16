@@ -165,13 +165,6 @@ output:
         - *.css
 ```
 
-**Enable XHTML output**
-
-```
-output:
-    xhtml: on
-```
-
 **Change default output file extension**
 
 ```
