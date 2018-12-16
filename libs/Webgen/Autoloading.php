@@ -7,6 +7,7 @@
 
 	namespace Webgen;
 
+	use CzProject\Logger\ILogger;
 	use Nette\Utils;
 
 	class Autoloading
@@ -17,11 +18,15 @@
 
 		private $libsDir;
 
+		/** @var ILogger */
+		private $logger;
 
-		public function __construct($composerFile, $libsDir)
+
+		public function __construct($composerFile, $libsDir, ILogger $logger)
 		{
 			$this->composerFile = $composerFile;
 			$this->libsDir = $libsDir;
+			$this->logger = $logger;
 		}
 
 
@@ -51,14 +56,14 @@
 
 			// Include files
 			if (count($files)) {
-				\Cli\Cli::log('Autoload files...');
+				$this->logger->log('Autoload files...');
 
 				foreach ($files as $file) {
 					if (file_exists($file)) {
-						\Cli\Cli::log($file);
+						$this->logger->log($file);
 						LimitedScope::load($file);
 					} else {
-						\Cli\Cli::log("[not found] $file");
+						$this->logger->log("[not found] $file");
 					}
 				}
 			}

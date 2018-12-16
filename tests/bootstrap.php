@@ -30,11 +30,12 @@ function webgenGenerate($projectDirectory, $outputDirectory)
 		$projectDirectory,
 		'--run',
 	);
-    $logger = new Webgen\Logger;
+	$logger = new CzProject\Logger\MemoryLogger;
 	$runner = new TestRunner($logger);
 	$runner->testOutputDirectory = $outputDirectory;
 	$cli = new Webgen\CliParser($logger, $cliArgs);
 	$cli->run($runner);
+	return $logger->getLog();
 }
 
 

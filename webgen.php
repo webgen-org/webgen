@@ -20,7 +20,7 @@
 
 	require $vendorDirectory . '/autoload.php';
 
-	$logger = new Webgen\Logger;
+	$logger = new CzProject\Logger\CliLogger;
 	$runner = new Webgen\Runner($logger);
 	$cli = new Webgen\CliParser($logger, $_SERVER['argv']);
 

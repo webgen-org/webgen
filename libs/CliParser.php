@@ -6,6 +6,7 @@
 	 */
 
 	namespace Webgen;
+	use CzProject\Logger\ILogger;
 	use Nette;
 
 	class CliParser
@@ -81,7 +82,7 @@
 			set_time_limit(0);
 			set_error_handler(function($severity, $message, $file, $line) {
 				if (($severity & error_reporting()) === $severity) {
-					\Cli\Cli::error("Error: $message in $file on $line");
+					$this->logger->log("Error: $message in $file on $line", ILogger::ERROR);
 					ob_flush();
 					echo "\n\n";
 					exit(2);
@@ -89,7 +90,7 @@
 				return FALSE;
 			});
 			set_exception_handler(function($e) {
-				\Cli\Cli::error("Error: {$e->getMessage()} in {$e->getFile()} on {$e->getLine()}\n");
+				$this->logger->log("Error: {$e->getMessage()} in {$e->getFile()} on {$e->getLine()}\n", ILogger::ERROR);
 			});
 		}
 
@@ -126,10 +127,10 @@
 			$config = $this->runner->getConfig();
 			$dir = $this->currentDirectory;
 
-			$composerFile = is_string($config['input']['composerFile']) ? \Cli\Cli::formatPath($config['input']['composerFile'], $dir) : NULL;
-			$libsDir = \Cli\Cli::formatPath($config['input']['libsDir'], $dir);
+			$composerFile = is_string($config['input']['composerFile']) ? Helpers::formatPath($config['input']['composerFile'], $dir) : NULL;
+			$libsDir = Helpers::formatPath($config['input']['libsDir'], $dir);
 
-			$autoloading = new \Webgen\Autoloading($composerFile, $libsDir);
+			$autoloading = new \Webgen\Autoloading($composerFile, $libsDir, $this->logger);
 			$autoloading->autoload();
 
 			if ($robotLoader = $autoloading->createRobotLoader()) {
@@ -139,12 +140,12 @@
 				$cacheDir = $config['output']['cacheDir'];
 
 				if (is_string($cacheDir)) {
-					$cacheDir = \Cli\Cli::formatPath($cacheDir, $dir);
+					$cacheDir = Helpers::formatPath($cacheDir, $dir);
 					$this->logger->log('Cache dir: ' . $cacheDir);
 
 					// create cache dir
 					if (!is_dir($cacheDir) && !@mkdir($cacheDir, 0777, TRUE)) {
-						\Cli\Cli::error('Error: Create cache dir failed');
+						$this->logger->log('Error: Create cache dir failed', ILogger::ERROR);
 						$robotLoader->setTempDirectory(sys_get_temp_dir() . '/robot-loader.' . \Nette\Utils\Random::generate(10));
 					} else {
 						$robotLoader->setTempDirectory($cacheDir);
@@ -164,7 +165,7 @@
 		 */
 		private function loadCliParameters()
 		{
-			$params = \Cli\Cli::parseParams($this->cliArgs);
+			$params = Helpers::parseParams($this->cliArgs);
 
 			if ($params === FALSE || !isset($params['run'])) {
 				return FALSE;
@@ -172,7 +173,7 @@
 
 			$cwDir = getcwd();
 			$dir = isset($params['dir']) ? $params['dir'] : $cwDir;
-			$dir = \Cli\Cli::formatPath($dir, $cwDir);
+			$dir = Helpers::formatPath($dir, $cwDir);
 			$this->watchMode = isset($params['watch']);
 
 			return array(
@@ -231,9 +232,9 @@
 
 			$this->runner->addConfig($config);
 			$config = $this->runner->getConfig();
-			$this->runner->inputDirectory = \Cli\Cli::formatPath($config['input']['dir'], $dir);
-			$this->runner->outputDirectory = \Cli\Cli::formatPath($config['output']['dir'], $dir);
-			$this->runner->layoutPath = \Cli\Cli::formatPath($config['input']['layout'], $dir);
+			$this->runner->inputDirectory = Helpers::formatPath($config['input']['dir'], $dir);
+			$this->runner->outputDirectory = Helpers::formatPath($config['output']['dir'], $dir);
+			$this->runner->layoutPath = Helpers::formatPath($config['input']['layout'], $dir);
 			$this->runner->productionMode = $config['output']['productionMode'];
 			$this->runner->currentDirectory = $this->currentDirectory;
 

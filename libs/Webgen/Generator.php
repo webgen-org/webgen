@@ -6,6 +6,7 @@
 	 */
 
 	namespace Webgen;
+	use CzProject\Logger\ILogger;
 	use Nette;
 	use Nette\Utils\Finder as NFinder;
 	use Nette\Utils\FileSystem;
@@ -68,11 +69,15 @@
 		/** @var  Pages */
 		private $pages;
 
+		/** @var ILogger */
+		private $logger;
 
-		public function __construct()
+
+		public function __construct(ILogger $logger)
 		{
 			$this->highlighter = new \Webgen\Highlighter;
 			$this->pages = new \Webgen\Pages;
+			$this->logger = $logger;
 		}
 
 
@@ -102,28 +107,28 @@
 					$mask = NULL;
 				}
 
-				\Cli\Cli::log("Copy into output directory:");
+				$this->logger->log("Copy into output directory:");
 
 				foreach (NFinder::find($mask)->exclude('*.latte', '*.texy')->from($this->inputDirectory) as $file) {
 					$dest = $this->outputFileDirectory . '/' . $this->shortPath((string) $file, $this->inputDirectory);
 
 					if (!$file->isReadable()) {
-						\Cli\Cli::log("[skipped] $file");
+						$this->logger->log("[skipped] $file");
 						continue;
 					} elseif ($file->isDir()) {
 						$this->makeDir($dest);
 					} elseif ($file->isFile()) {
 						$this->makeDir(dirname($dest));
 						if (@stream_copy_to_stream(fopen($file, 'r'), fopen($dest, 'w')) === FALSE) {
-							\Cli\Cli::log("[error]   $file");
+							$this->logger->log("[error]   $file");
 							continue;
 						}
 					}
 
-					\Cli\Cli::log($file);
+					$this->logger->log($file);
 				}
 
-				\Cli\Cli::log('');
+				$this->logger->log('');
 			}
 		}
 
@@ -359,7 +364,7 @@
 					$this->pages->addPage($this->getCurrentOutputFile(), $this->currentPage->getProperties());
 
 				} else {
-					\Cli\Cli::log("[inactive] {$this->currentFile}");
+					$this->logger->log("[inactive] {$this->currentFile}");
 				}
 
 				$this->currentIteration++;
@@ -635,7 +640,7 @@
 
 		protected function createDir($directory)
 		{
-			\Cli\Cli::log("Create output directory:\n$directory");
+			$this->logger->log("Create output directory:\n$directory");
 			FileSystem::delete($directory);
 			FileSystem::createDir($directory);
 		}

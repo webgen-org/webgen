@@ -6,6 +6,7 @@
 	 */
 
 	namespace Webgen;
+	use CzProject\Logger\ILogger;
 	use Nette;
 	use Nette\Utils\Finder as NFinder;
 
@@ -137,16 +138,17 @@
 				$this->generate($generator, $finder);
 				$this->generateDefferedFiles($generator);
 
-				$this->logger->success("Done.\n");
+				$this->logger->log("Done.\n", ILogger::SUCCESS);
 				return 0;
 
 			} catch (\Exception $e) {
-				$this->logger->error(
+				$this->logger->log(
 					"\nFatal error ["
 						. get_class($e)
 					. "]:\n  "
 					. $e->getMessage()
-					. "\n\n  file: {$e->getFile()}\n  line: {$e->getLine()}\n"
+					. "\n\n  file: {$e->getFile()}\n  line: {$e->getLine()}\n",
+					ILogger::ERROR
 				);
 				return 1;
 			}
@@ -201,7 +203,7 @@
 
 		protected function createGenerator()
 		{
-			$generator = new \Webgen\Generator;
+			$generator = new \Webgen\Generator($this->logger);
 			$generator->config = $this->getConfig();
 			$generator->inputDirectory = $this->inputDirectory;
 			$generator->outputDirectory = $this->outputDirectory;

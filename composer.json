@@ -18,7 +18,8 @@
 		"latte/latte": "^2.4",
 		"czproject/path-helper": "^4.1",
 		"nette/finder": "^2.4",
-		"nette/robot-loader": "^3.0"
+		"nette/robot-loader": "^3.0",
+		"czproject/logger": "^0.11.0"
 	},
 	"bin": ["webgen"],
 	"autoload": {
